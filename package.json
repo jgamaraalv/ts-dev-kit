@@ -1,0 +1,28 @@
+{
+  "name": "ts-dev-kit",
+  "version": "1.0.0",
+  "description": "Claude Code plugin: 15 agents + 14 skills for TypeScript fullstack development",
+  "author": "jgamaraalv",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jgamaraalv/ts-dev-kit.git"
+  },
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "typescript",
+    "fullstack",
+    "skills",
+    "agents"
+  ],
+  "files": [
+    ".claude-plugin/",
+    "agents/",
+    "skills/",
+    "docs/",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ]
+}
