@@ -1,6 +1,6 @@
 {
   "name": "ts-dev-kit",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "15 specialized agents and 14 skills for TypeScript fullstack development with Fastify, Next.js, PostgreSQL, Redis, and more.",
   "author": {
     "name": "jgamaraalv",
