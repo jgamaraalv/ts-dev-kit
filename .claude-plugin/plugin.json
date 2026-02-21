@@ -1,0 +1,24 @@
+{
+  "name": "ts-dev-kit",
+  "version": "1.0.0",
+  "description": "15 specialized agents and 14 skills for TypeScript fullstack development with Fastify, Next.js, PostgreSQL, Redis, and more.",
+  "author": {
+    "name": "jgamaraalv",
+    "url": "https://github.com/jgamaraalv"
+  },
+  "homepage": "https://github.com/jgamaraalv/ts-dev-kit",
+  "repository": "https://github.com/jgamaraalv/ts-dev-kit",
+  "license": "MIT",
+  "keywords": [
+    "typescript",
+    "fullstack",
+    "fastify",
+    "nextjs",
+    "react",
+    "postgresql",
+    "redis",
+    "docker",
+    "agents",
+    "skills"
+  ]
+}
