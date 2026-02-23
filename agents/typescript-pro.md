@@ -1,5 +1,6 @@
 ---
 name: typescript-pro
+color: "#3178C6"
 description: "Advanced TypeScript specialist with deep expertise in generics, type inference, conditional types, and strict type safety. Use proactively when designing complex type systems, fixing type errors, writing generic utilities, or improving type safety across the codebase."
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit

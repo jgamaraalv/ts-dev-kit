@@ -1,5 +1,6 @@
 ---
 name: code-reviewer
+color: "#F59E0B"
 description: "Senior engineer who provides thorough code reviews focused on correctness, security, performance, and maintainability. Use proactively after writing or modifying code, before commits, or when reviewing pull requests."
 tools: Read, Grep, Glob, Bash
 model: inherit

@@ -1,5 +1,6 @@
 ---
 name: docker-expert
+color: "#2496ED"
 description: "Docker containerization expert specializing in multi-stage builds, Docker Compose, image optimization, and container security. Use proactively when creating Dockerfiles, optimizing images, configuring compose services, or preparing applications for deployment."
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet

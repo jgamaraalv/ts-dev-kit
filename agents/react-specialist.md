@@ -1,5 +1,6 @@
 ---
 name: react-specialist
+color: "#61DAFB"
 description: "React specialist expert in hooks, performance optimization, state management patterns, and component architecture. Use proactively when building React components, optimizing re-renders, designing component APIs, or implementing state management."
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit

@@ -1,5 +1,6 @@
 ---
 name: api-builder
+color: "#10B981"
 description: "API development expert who builds developer-friendly Fastify 5 REST interfaces. Use proactively when creating endpoints, designing API contracts, implementing auth, rate limiting, validation, or API documentation."
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit

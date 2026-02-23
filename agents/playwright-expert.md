@@ -1,5 +1,6 @@
 ---
 name: playwright-expert
+color: "#D65348"
 description: "Playwright testing expert building reliable end-to-end tests with cross-browser support, visual testing, and CI integration. Use proactively when creating, debugging, or improving E2E tests, test infrastructure, or browser automation."
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet

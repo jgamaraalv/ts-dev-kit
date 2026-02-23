@@ -1,5 +1,6 @@
 ---
 name: test-generator
+color: "#15C213"
 description: "Testing expert who creates comprehensive test suites with unit, integration, and E2E coverage. Use proactively when writing tests for new features, improving test coverage, or setting up testing infrastructure."
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit

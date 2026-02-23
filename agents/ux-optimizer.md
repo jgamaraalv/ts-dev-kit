@@ -1,5 +1,6 @@
 ---
 name: ux-optimizer
+color: "#EC4899"
 description: "UX optimization expert who simplifies user experiences and reduces friction. Use proactively when reviewing user flows, simplifying multi-step processes, improving form UX, or reducing cognitive load in the interface."
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet
