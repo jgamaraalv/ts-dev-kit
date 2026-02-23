@@ -1,5 +1,6 @@
 ---
 name: nextjs-expert
+color: "#FFFFFF"
 description: "Next.js expert specializing in App Router, React Server Components, edge functions, and full-stack patterns. Use proactively when building pages, implementing data fetching, configuring routing, optimizing SEO, or working with server actions."
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit

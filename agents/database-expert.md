@@ -1,5 +1,6 @@
 ---
 name: database-expert
+color: "#336791"
 description: "Database optimization specialist for PostgreSQL performance and schema design at scale. Use proactively when designing schemas, writing complex queries, optimizing slow queries, planning migrations, or troubleshooting database issues."
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit

@@ -1,5 +1,6 @@
 ---
 name: security-scanner
+color: "#EF4444"
 description: "Security expert who identifies and fixes vulnerabilities before they're exploited. Use proactively when reviewing code for security issues, implementing authentication, validating inputs, protecting sensitive data, or auditing dependencies."
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet

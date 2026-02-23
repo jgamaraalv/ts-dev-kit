@@ -1,5 +1,6 @@
 ---
 name: accessibility-pro
+color: "#06B6D4"
 description: "Accessibility specialist ensuring WCAG 2.1 AA compliance and inclusive design. Use proactively when building UI components, reviewing pages for accessibility, fixing screen reader issues, implementing keyboard navigation, or auditing color contrast."
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet

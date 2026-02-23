@@ -1,5 +1,6 @@
 ---
 name: debugger
+color: "#F97316"
 description: "Debugging specialist expert in error investigation, stack trace analysis, and systematic problem diagnosis. Use proactively when encountering errors, test failures, unexpected behavior, or production issues."
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit
