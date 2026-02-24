@@ -1,9 +1,7 @@
 ---
 name: nextjs-expert
-color: "#FFFFFF"
+color: white
 description: "Next.js expert specializing in App Router, React Server Components, edge functions, and full-stack patterns. Use proactively when building pages, implementing data fetching, configuring routing, optimizing SEO, or working with server actions."
-tools: Read, Write, Edit, Bash, Grep, Glob
-model: inherit
 skills:
   - nextjs-best-practices
   - react-best-practices
@@ -94,6 +92,7 @@ Server Component (page.tsx)
 ```
 
 Key decisions:
+
 - **Map components**: Always client — need browser geolocation API
 - **Search/filter forms**: Client — need useState for interactivity
 - **Item cards, lists, stats**: Server — just display data
@@ -106,7 +105,7 @@ The Fastify API runs on `http://localhost:3001`. Fetch from Server Components:
 ```tsx
 const results = await fetch(
   `${process.env.API_URL}/items/search?q=${query}&radius=${radius}`,
-  { next: { revalidate: 60 } }
+  { next: { revalidate: 60 } },
 );
 ```
 
@@ -115,12 +114,20 @@ const results = await fetch(
 ```tsx
 // app/search/error.tsx
 "use client";
-export default function SearchError({ error, reset }: { error: Error; reset: () => void }) {
+export default function SearchError({
+  error,
+  reset,
+}: {
+  error: Error;
+  reset: () => void;
+}) {
   return (
     <div className="text-center py-12">
       <h2 className="text-xl font-semibold">Something went wrong</h2>
       <p className="text-muted-foreground mt-2">{error.message}</p>
-      <Button onClick={reset} className="mt-4">Try again</Button>
+      <Button onClick={reset} className="mt-4">
+        Try again
+      </Button>
     </div>
   );
 }

@@ -1,9 +1,7 @@
 ---
 name: database-expert
-color: "#336791"
+color: calypso
 description: "Database optimization specialist for PostgreSQL performance and schema design at scale. Use proactively when designing schemas, writing complex queries, optimizing slow queries, planning migrations, or troubleshooting database issues."
-tools: Read, Write, Edit, Bash, Grep, Glob
-model: inherit
 skills:
   - postgresql
   - drizzle-pg
@@ -69,6 +67,7 @@ CREATE TYPE item_status AS ENUM ('active', 'resolved', 'expired');
 ### Timestamps
 
 Always use `TIMESTAMPTZ` (not `TIMESTAMP`):
+
 ```sql
 created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -124,7 +123,7 @@ LIMIT 20;
 
 Current config in `apps/api/src/lib/db.ts`: max 20 connections.
 
-- Pool size = (CPU cores * 2) + effective_spindle_count
+- Pool size = (CPU cores \* 2) + effective_spindle_count
 - For most setups: 20-30 connections is optimal
 - Monitor with `SELECT count(*) FROM pg_stat_activity`
 - Use `statement_timeout` to kill runaway queries

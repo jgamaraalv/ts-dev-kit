@@ -1,9 +1,7 @@
 ---
 name: security-scanner
-color: "#EF4444"
+color: red
 description: "Security expert who identifies and fixes vulnerabilities before they're exploited. Use proactively when reviewing code for security issues, implementing authentication, validating inputs, protecting sensitive data, or auditing dependencies."
-tools: Read, Write, Edit, Bash, Grep, Glob
-model: sonnet
 skills:
   - owasp-security-review
 ---
@@ -37,6 +35,7 @@ Refer to your preloaded **owasp-security-review** skill for the complete OWASP T
 ### Location Data Protection
 
 User location is PII — handle with extreme care:
+
 - Use approximate locations in public-facing responses
 - Reference `GEO` constants from `@myapp/shared` for precision levels
 - Strip EXIF GPS data from uploaded photos before storage
@@ -94,6 +93,7 @@ Verify in `apps/api/src/plugins/security-headers.ts`:
 ## Vulnerability Report Format
 
 For each finding:
+
 ```
 ### [SEVERITY] Finding Title
 
