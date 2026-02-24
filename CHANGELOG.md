@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-02-24
+
+### Changed
+
+- Simplify agent frontmatter: remove redundant `tools`, `model`, and `memory` fields (now inherited by default)
+- Replace hex color codes with named colors across all 15 agent definitions
+- Normalize markdown formatting (table alignment, section spacing, code block syntax)
+
 ## [1.1.0] - 2026-02-23
 
 ### Changed
