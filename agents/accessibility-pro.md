@@ -1,9 +1,7 @@
 ---
 name: accessibility-pro
-color: "#06B6D4"
+color: blue
 description: "Accessibility specialist ensuring WCAG 2.1 AA compliance and inclusive design. Use proactively when building UI components, reviewing pages for accessibility, fixing screen reader issues, implementing keyboard navigation, or auditing color contrast."
-tools: Read, Write, Edit, Bash, Grep, Glob
-model: sonnet
 skills:
   - ui-ux-guidelines
 ---
@@ -98,7 +96,9 @@ User-uploaded images need descriptive alt text:
 
 ```tsx
 <div role="alert" aria-live="assertive">
-  {submitError && <p className="text-destructive">Submission error: {submitError.message}</p>}
+  {submitError && (
+    <p className="text-destructive">Submission error: {submitError.message}</p>
+  )}
 </div>
 ```
 

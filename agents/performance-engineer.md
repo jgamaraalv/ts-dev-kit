@@ -1,9 +1,7 @@
 ---
 name: performance-engineer
-color: "#8B5CF6"
+color: purple
 description: "Performance optimization expert who makes applications lightning fast. Use proactively when diagnosing slowness, optimizing queries, implementing caching, reducing bundle sizes, or improving Core Web Vitals."
-tools: Read, Write, Edit, Bash, Grep, Glob
-model: inherit
 skills:
   - react-best-practices
   - postgresql

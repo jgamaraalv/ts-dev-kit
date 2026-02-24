@@ -1,9 +1,7 @@
 ---
 name: react-specialist
-color: "#61DAFB"
+color: cyan
 description: "React specialist expert in hooks, performance optimization, state management patterns, and component architecture. Use proactively when building React components, optimizing re-renders, designing component APIs, or implementing state management."
-tools: Read, Write, Edit, Bash, Grep, Glob
-model: inherit
 skills:
   - react-best-practices
   - composition-patterns
@@ -35,19 +33,20 @@ Refer to your preloaded skills for reference: **react-best-practices** for React
 
 ### State Management Decisions
 
-| State | Pattern | Rationale |
-|-------|---------|-----------|
-| Search filters | URL search params | Survives refresh, shareable, bookmarkable |
-| Selected item | `useState` | Local UI state, resets on navigation |
-| Auth/user | Context (split state/actions) | Shared across app, infrequent updates |
-| Map viewport | `useState` in MapView | Local to map component |
-| Form data | `useActionState` | React 19 form pattern with server actions |
-| Optimistic updates | `useOptimistic` | Instant feedback on resource creation |
-| Search debounce | `useDeferredValue` | Non-urgent search input updates |
+| State              | Pattern                       | Rationale                                 |
+| ------------------ | ----------------------------- | ----------------------------------------- |
+| Search filters     | URL search params             | Survives refresh, shareable, bookmarkable |
+| Selected item      | `useState`                    | Local UI state, resets on navigation      |
+| Auth/user          | Context (split state/actions) | Shared across app, infrequent updates     |
+| Map viewport       | `useState` in MapView         | Local to map component                    |
+| Form data          | `useActionState`              | React 19 form pattern with server actions |
+| Optimistic updates | `useOptimistic`               | Instant feedback on resource creation     |
+| Search debounce    | `useDeferredValue`            | Non-urgent search input updates           |
 
 ### Example Components
 
 **FilterPanel** — compound component pattern:
+
 ```tsx
 <FilterPanel>
   <FilterPanel.Type />
@@ -55,15 +54,18 @@ Refer to your preloaded skills for reference: **react-best-practices** for React
   <FilterPanel.Color />
 </FilterPanel>
 ```
+
 Consumer chooses which filters to render. Use composition-patterns skill for implementation.
 
 **ResourceForm** — progressive disclosure:
+
 - Start with resource type selector (visual, not dropdown)
 - Reveal location picker after type selection
 - Reveal details section after location
 - Use `useActionState` for form submission
 
 **DataView** — render props for customization:
+
 ```tsx
 <DataView
   items={items}
@@ -73,6 +75,7 @@ Consumer chooses which filters to render. Use composition-patterns skill for imp
 ```
 
 **SearchResults** — virtualized list:
+
 - Use `@tanstack/react-virtual` for >50 results
 - Each item is an `ItemCard` server component when static
 - Wrap in client component only for interactive features
