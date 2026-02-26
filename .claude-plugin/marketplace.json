@@ -12,7 +12,7 @@
       "name": "ts-dev-kit",
       "source": "./",
       "description": "13 specialized agents and 16 skills for TypeScript fullstack development",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "author": {
         "name": "jgamaraalv"
       },
