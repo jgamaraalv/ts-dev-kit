@@ -108,8 +108,7 @@ Match skills to the sub-area identified in domain_areas:
 **Cross-cutting** → combine skills from each sub-area involved.
 </skill_map>
 
-In SINGLE-ROLE mode: call each skill yourself before starting phase 4.
-In MULTI-ROLE mode: include explicit Skill() call instructions in each subagent prompt (see references/agent-dispatch.md).
+In ALL execution modes: include explicit Skill() call instructions in each subagent prompt (see references/agent-dispatch.md). The orchestrator does not need to load skills itself — agents load them before writing code.
 </required_skills>
 
 <available_mcps>
@@ -235,24 +234,28 @@ Constraints:
 <execution_mode_decision>
 At the end of phase 2, make an explicit execution mode decision and state it to the user:
 
-> **EXECUTION MODE: SINGLE-ROLE** — I will implement all changes directly.
+> **EXECUTION MODE: SINGLE-ROLE** — Single domain. I will dispatch 1-2 focused agents for implementation.
 
 OR
 
-> **EXECUTION MODE: MULTI-ROLE** — I will act as orchestrator, dispatching specialized agents via the Task tool.
+> **EXECUTION MODE: MULTI-ROLE** — Multiple domains. I will dispatch specialized agents across domains via the Task tool.
 
 OR
 
 > **EXECUTION MODE: PLAN** — The task is highly complex. I will enter plan mode to design a structured implementation plan before executing.
+
+**CRITICAL: In ALL execution modes, the orchestrator (main session) NEVER writes application code directly.** All implementation — components, hooks, pages, routes, services, tests — is delegated to agents via the Task tool. The orchestrator's role is: context gathering, agent dispatch, output review, integration glue (under 15 lines), and quality gates.
+
+The difference between SINGLE-ROLE and MULTI-ROLE is decomposition complexity, NOT whether agents are used:
+- **SINGLE-ROLE**: simpler decomposition (1-2 agents, same domain). Use when the task is contained within one package or domain.
+- **MULTI-ROLE**: complex decomposition (3+ agents, multiple domains). Use when the task spans packages or skill sets.
 
 Use PLAN mode when:
 - The task has 4+ distinct roles or implementation phases.
 - The scope is large enough that context window management becomes a concern.
 - The task benefits from upfront architectural planning before any code is written.
 
-In PLAN mode: use EnterPlanMode to design the full plan. Once the user approves it, exit plan mode and execute phases sequentially as MULTI-ROLE orchestrator, with context cleanup between major phases when needed.
-
-Follow this decision in phase 4. In MULTI-ROLE and PLAN modes, delegate application code to agents — your job is dispatch, review, integration, and quality gates.
+In PLAN mode: use EnterPlanMode to design the full plan. Once the user approves it, exit plan mode and execute phases sequentially as orchestrator, with context cleanup between major phases when needed.
 </execution_mode_decision>
 </phase_2b_multi_role_decomposition>
 
@@ -290,64 +293,62 @@ Follow this decision in phase 4. In MULTI-ROLE and PLAN modes, delegate applicat
 </phase_3_task_analysis>
 
 <phase_3b_baseline_capture>
-Run the verification plan before writing any code to establish the baseline for comparison.
+**MANDATORY.** Run the verification plan before writing any code to establish the baseline for comparison. Do NOT skip this phase.
 
-1. Run standard quality gates and record results (pass/fail, counts, bundle sizes).
-2. Run domain-specific checks from the verification plan:
-   - **Frontend**: if playwright/chrome-devtools MCPs are available, navigate to affected pages, capture screenshots, and measure performance (LCP, load time). Otherwise, record build output and bundle sizes.
-   - **Backend**: execute requests to affected endpoints (via curl or available API MCPs) and record response status, payload shape, and timing.
-   - **Database**: record current schema state for affected tables.
-3. Store all baseline values — these are compared against post-change results in phase 5b.
+**Step 1: Standard quality gates** — run and record results (pass/fail, counts, bundle sizes).
 
-If testing MCPs are not available, skip those checks and note it:
-> **Baseline captured.** MCP-based visual/performance checks skipped — no browser MCPs available.
+**Step 2: MCP-based checks** — follow this decision tree in order:
 
-In MULTI-ROLE mode, the orchestrator runs baseline capture before dispatching any agents.
+1. Use ToolSearch to confirm which browser MCPs are available (playwright, chrome-devtools, or neither).
+2. **If browser MCPs are available AND the task touches frontend pages:**
+   a. Check if the dev server is running (attempt to navigate to `localhost` or the configured URL).
+   b. **If dev server is accessible:** navigate to each affected page, capture screenshots of key states, and measure performance (LCP, load time). Use Chrome DevTools traces or Playwright screenshots as appropriate.
+   c. **If dev server is NOT accessible:** ask the user whether to start it or skip visual checks. Do NOT silently skip — the user must confirm.
+3. **If no browser MCPs are available:** note it explicitly and proceed with shell-only checks (build output, bundle sizes).
+4. **Backend tasks:** execute requests to affected endpoints (via curl or available API MCPs) and record response status, payload shape, and timing.
+5. **Database tasks:** record current schema state for affected tables.
+
+**Step 3: Store baseline** — all values captured here are compared against post-change results in phase 5b.
+
+When visual/performance checks are skipped, state the reason:
+> **Baseline captured.** MCP-based visual checks skipped — [reason: no browser MCPs available | dev server not running (user confirmed skip) | no frontend pages affected].
+
+The orchestrator ALWAYS runs baseline capture before dispatching any agents, regardless of execution mode.
 </phase_3b_baseline_capture>
 
 <phase_4_execution>
-Before writing any code, check the execution mode decision from phase 2.
+**CRITICAL: The orchestrator (main session) NEVER writes application code.** All implementation is dispatched to agents via the Task tool. The orchestrator may only write trivial glue (under 15 lines total): barrel file exports, small wiring imports, or config one-liners.
 
-**MULTI-ROLE → Follow <multi_role_orchestration> below.**
-**SINGLE-ROLE → Follow <single_role_implementation> below.**
+Before dispatching, check the execution mode decision from phase 2 to determine decomposition complexity.
 
-<multi_role_orchestration>
-As orchestrator, dispatch agents, review their output, and verify integration. Do not implement application code yourself.
+<agent_dispatch_protocol>
+This protocol applies to ALL execution modes (SINGLE-ROLE, MULTI-ROLE, and PLAN).
 
-You may write code directly only for trivial glue (under 15 lines total):
-- Adding an export line to a barrel file
-- Adding a small schema to the shared package that multiple agents need
-- Wiring an import in a top-level file after agents complete
+As orchestrator, your responsibilities are: context gathering, agent dispatch, output review, integration glue, and quality gates. You do NOT write application code (components, hooks, pages, routes, services, tests).
 
-Everything else should be delegated to an agent. For the agent prompt template and dispatch details, see references/agent-dispatch.md.
-
-Dispatch steps:
-1. Create TaskCreate entries for each role.
+**Dispatch steps:**
+1. Create TaskCreate entries for each role to track progress.
 2. For each role, dispatch a specialized agent via the Task tool with a self-contained prompt. Set the `model` parameter according to rule_4_model_selection.
 3. Launch independent agents in parallel. Launch dependent agents sequentially.
 4. Each agent runs its own quality gates before reporting completion. Review the agent's output and gate results before dispatching dependents.
 5. After all agents complete, proceed to phase 5 for the final cross-package quality gates.
 
-If you find yourself creating application files (routes, components, services, hooks, tests) while in MULTI-ROLE mode, delegate to an agent instead.
-</multi_role_orchestration>
+For the agent prompt template and dispatch details, see references/agent-dispatch.md.
 
-<single_role_implementation>
-Think through each step before acting. Share your reasoning at key decision points.
+**Self-check:** If you find yourself creating application files (routes, components, services, hooks, tests, pages), STOP and delegate to an agent instead.
+</agent_dispatch_protocol>
 
 <build_order>
-Work from micro to macro — build dependencies before dependents:
-1. Shared code first — new constants, types, schemas, or enums needed by multiple packages go in the shared/common package (discover its location from the project structure).
+Instruct agents to work from micro to macro — build dependencies before dependents:
+1. Shared code first — new constants, types, schemas, or enums needed by multiple packages go in the shared/common package.
 2. Check for reuse — before creating a helper, hook, component, or utility, search the codebase for existing code that can be used or extended.
 3. Implement the core change — build the feature/fix in the target package.
 4. Wire it together — connect the pieces across packages if needed.
 
-Decision tree:
+Decision tree (include in agent prompts when relevant):
 - Is this code used by multiple modules? YES → Create in the shared/common package.
 - Is this code used by multiple modules? NO → Is this component multi-file? YES → Create folder with index.tsx + related files. NO → Single file, co-located with usage.
 </build_order>
-
-If you created any temporary files or scripts for iteration, remove them at the end.
-</single_role_implementation>
 </phase_4_execution>
 
 <phase_5_quality_gates>
