@@ -100,6 +100,42 @@ claude --plugin-dir ./ts-dev-kit
 
 ---
 
+## Recommended MCP Servers
+
+Some agents and skills reference external MCP tools for documentation lookup, browser debugging, E2E testing, and web fetching. These are **optional** — skills degrade gracefully without them — but installing them unlocks the full experience.
+
+| MCP Server    | Used By                                  | Purpose                              |
+| ------------- | ---------------------------------------- | ------------------------------------ |
+| context7      | Most skills (doc lookup)                 | Query up-to-date library docs        |
+| playwright    | playwright-expert, debugger, test-generator | Browser automation and E2E testing |
+| chrome-devtools | debugger                               | Frontend debugging, screenshots      |
+| firecrawl     | task skill                               | Web fetching and scraping            |
+
+### Installing as Claude Code plugins
+
+```bash
+claude plugin add context7
+claude plugin add playwright
+claude plugin add firecrawl
+```
+
+### Installing as standalone MCP servers
+
+```bash
+# context7 — no API key required
+claude mcp add context7 -- npx -y @upstash/context7-mcp@latest
+
+# playwright — no API key required
+claude mcp add playwright -- npx -y @playwright/mcp@latest
+
+# firecrawl — requires FIRECRAWL_API_KEY
+claude mcp add firecrawl --env FIRECRAWL_API_KEY=your-key -- npx -y firecrawl-mcp
+```
+
+> **chrome-devtools** requires Chrome running with remote debugging enabled (`--remote-debugging-port=9222`). Refer to the [Chrome DevTools MCP docs](https://github.com/anthropics/mcp-chrome-devtools) for setup instructions.
+
+---
+
 ## Customizing for Your Project
 
 This kit ships with a project orchestration template at `docs/rules/orchestration.md.template`. It defines quality gates, workspace commands, and dependency ordering that you can adapt to your own monorepo or project.

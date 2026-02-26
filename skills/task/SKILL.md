@@ -278,7 +278,32 @@ Follow this decision in phase 4. In MULTI-ROLE and PLAN modes, delegate applicat
 4. For questions about project libraries, use Context7 (`mcp__context7__resolve-library-id` → `mcp__context7__query-docs`) to query up-to-date documentation. If anything is ambiguous, ask the user before proceeding.
 5. Check for helpful MCPs — does the task involve browser testing, external docs?
 6. Plan the implementation order — determine which changes must happen first (e.g., types before lib before hooks before components before pages).
+7. Generate the verification plan — build a before/after test plan combining task-defined criteria with automatic checks based on domain and available MCPs. See references/verification-protocol.md for the full protocol.
+   - Detect available testing MCPs (playwright, chrome-devtools, or none).
+   - Map the task domain to checks: frontend → visual + performance, backend → API responses, database → schema state.
+   - Always include standard quality gates (lint, build, test) as baseline.
+   - Present the plan:
+     > **Verification plan:**
+     > - Baseline checks: [list]
+     > - MCPs for verification: [list or "none available — shell-only checks"]
+     > - Post-change checks: [list]
 </phase_3_task_analysis>
+
+<phase_3b_baseline_capture>
+Run the verification plan before writing any code to establish the baseline for comparison.
+
+1. Run standard quality gates and record results (pass/fail, counts, bundle sizes).
+2. Run domain-specific checks from the verification plan:
+   - **Frontend**: if playwright/chrome-devtools MCPs are available, navigate to affected pages, capture screenshots, and measure performance (LCP, load time). Otherwise, record build output and bundle sizes.
+   - **Backend**: execute requests to affected endpoints (via curl or available API MCPs) and record response status, payload shape, and timing.
+   - **Database**: record current schema state for affected tables.
+3. Store all baseline values — these are compared against post-change results in phase 5b.
+
+If testing MCPs are not available, skip those checks and note it:
+> **Baseline captured.** MCP-based visual/performance checks skipped — no browser MCPs available.
+
+In MULTI-ROLE mode, the orchestrator runs baseline capture before dispatching any agents.
+</phase_3b_baseline_capture>
 
 <phase_4_execution>
 Before writing any code, check the execution mode decision from phase 2.
@@ -345,6 +370,20 @@ If a gate fails:
 - Repeat until all gates pass cleanly.
 </phase_5_quality_gates>
 
+<phase_5b_post_change_verification>
+After all quality gates pass, re-run the verification plan from phase 3b and compare against baseline.
+
+1. Re-run every check from phase 3b with identical parameters.
+2. Compare each result against baseline:
+   - **Quality gates**: must remain passing. New failures = regression.
+   - **Visual checks** (if MCPs available): compare screenshots for unintended changes.
+   - **Performance** (if MCPs available): compare metrics. Regressions > 10% must be investigated.
+   - **API responses**: compare status codes and payload shapes. Breaking changes = regression.
+3. Build the comparison table (see references/output-templates.md for format).
+
+If any regression is found, fix it, re-run phase 5 quality gates, then re-run this phase. Repeat until clean.
+</phase_5b_post_change_verification>
+
 <phase_6_documentation>
 After all quality gates pass, review whether the changes require documentation updates:
 
@@ -356,7 +395,9 @@ Only update documentation directly affected by the changes. Do not create new do
 </workflow>
 
 <output>
-When complete, produce the completion report. See references/output-templates.md for the exact format.
+When complete, produce the completion report including the baseline vs post-change comparison table. See references/output-templates.md for the exact format.
+
+If the task document specifies a results file path, also create the comparison report at that path.
 
 Do not add explanations, caveats, or follow-up suggestions unless the user explicitly asks. The report is the final output.
 </output>

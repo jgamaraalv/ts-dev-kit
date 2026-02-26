@@ -35,13 +35,15 @@ List every file created/modified/deleted across all roles.
 - test: pass/fail (count)
 - build: pass/fail (per package)
 
-### Task-defined test results
-If the task document defined tests, report results here:
-| Test | Baseline (before) | Result (after) | Delta |
-|------|-------------------|----------------|-------|
-| [test name] | [baseline value] | [post-change value] | [improvement or regression] |
+### Verification results (baseline vs post-change)
+| Check | Baseline (before) | Result (after) | Delta | Status |
+|-------|-------------------|----------------|-------|--------|
+| lint | [pass/fail] | [pass/fail] | — | [ok/regression] |
+| build | [pass/fail (size)] | [pass/fail (size)] | [delta] | [ok/improved/regression] |
+| tests | [count] | [count] | [delta] | [ok/improved/regression] |
+| [domain-specific check] | [baseline value] | [post-change value] | [delta] | [ok/improved/regression] |
 
-If no task-defined tests existed, omit this section.
+Include every check from the verification plan. This section is always present.
 
 ### Skills loaded
 List every skill called across all roles.
