@@ -114,7 +114,17 @@ Open the project in VS Code with the devcontainer.
 1. Verify VS Code is installed (`command -v code`).
 2. If VS Code is not installed, inform the user:
 
-> **VS Code is required** for devcontainer support. Install it from https://code.visualstudio.com/ and the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
+> **VS Code is required** for devcontainer support. Install it from https://code.visualstudio.com/ and re-run `/yolo`.
+
+Stop here. Do not proceed.
+
+3. Ensure the Dev Containers extension is installed:
+
+```bash
+code --install-extension ms-vscode-remote.remote-containers
+```
+
+This is idempotent — if already installed, VS Code simply reports it and moves on.
 
 **Launch sequence:**
 
@@ -248,6 +258,8 @@ Key security features:
 - Localhost and host network allowed
 - Startup verification: confirms `example.com` is blocked and `api.github.com` is reachable
 - Docker DNS rules preserved
+- Falls back to iptables-only rules if `ipset` kernel module is unavailable (common on Docker Desktop for Mac)
+- Full diagnostic log at `/tmp/firewall-init.log` for troubleshooting
 
 ### Step 5 — Add `.devcontainer` to `.gitignore` (optional)
 
