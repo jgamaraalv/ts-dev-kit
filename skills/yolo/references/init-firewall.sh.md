@@ -50,7 +50,7 @@ resolve_domain() {
     local domain="$1"
     local ips=""
     if command -v dig >/dev/null 2>&1; then
-        ips=$(dig +noall +answer +short A "$domain" 2>/dev/null | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$')
+        ips=$(dig +noall +answer +short A "$domain" 2>/dev/null | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | sort -u)
     fi
     if [ -z "$ips" ] && command -v getent >/dev/null 2>&1; then
         ips=$(getent ahostsv4 "$domain" 2>/dev/null | awk '{print $1}' | sort -u | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$')
@@ -257,6 +257,7 @@ echo "Log: $LOG"
 
 | Issue | Original behavior | Improved behavior |
 |-------|-------------------|-------------------|
+| Duplicate IPs from DNS | `ipset add` fatal error (exit 1) | Deduplicates via `sort -u` + `ipset add ... \|\| true` |
 | `ipset` not available | Fatal crash | Falls back to iptables-only rules |
 | `aggregate` not available | Fatal crash | Adds CIDRs individually without aggregation |
 | `dig` not available | Fatal crash | Falls back to `getent ahostsv4` |

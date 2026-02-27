@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.2] - 2026-02-27
+
+### Fixed
+
+- `/yolo` firewall script: deduplicate DNS results with `sort -u` in `resolve_domain()` to prevent `ipset add` failure on duplicate IPs (root cause: `marketplace.visualstudio.com` returns the same IP twice)
+
 ## [3.1.1] - 2026-02-27
 
 ### Fixed
