@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.0] - 2026-02-27
+
+### Added
+
+- `/execute-task` orchestrator anti-patterns section: 4 explicit rules (never fix errors inline, never guess-loop configs, never announce parallel without delivering it, never write application code as orchestrator) with a pre-send self-check checklist
+- `/execute-task` agent-dispatch rules 5–6: parallel dispatch enforcement ("parallel means parallel") and mandatory Context7-before-config policy
+
+### Changed
+
+- `/execute-task` Context7 guidance upgraded from optional recommendation to **mandatory** for all config and versioned API files — must query docs before writing any configuration
+- `/execute-task` parallel dispatch rule now includes CRITICAL annotation: announcing N parallel agents requires exactly N Task() calls in the same message
+- `/execute-task` quality gate failure handling: orchestrator must dispatch a specialist agent to fix errors instead of fixing inline (prevents context exhaustion and mid-task compaction)
+
 ## [3.2.0] - 2026-02-27
 
 ### Added

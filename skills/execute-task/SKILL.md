@@ -150,10 +150,12 @@ Identify MCPs that can assist execution:
 - chrome-devtools — inspect pages, debug network requests, check console
 - firecrawl — fetch external documentation or references from the web
 
-**Context7 usage**: When the task involves library APIs, version-specific patterns, or unfamiliar method signatures, use Context7 to query current documentation before writing code:
+**Context7 usage — MANDATORY for config and versioned APIs**: Many tools have breaking config changes across minor versions. **Before writing or modifying ANY configuration file** for versioned tools (OTel collector, Prometheus, Grafana, Loki, Tempo, Docker Compose, Drizzle, Fastify, Next.js, Redis, BullMQ, Nginx, etc.), you MUST query Context7 first to verify the correct syntax for the installed version. Do NOT try variations blindly — guess-looping config fixes wastes context and compounds errors.
+
 1. `mcp__context7__resolve-library-id` — resolve the library name (e.g., "fastify", "drizzle-orm", "next", "react", "bullmq") to its Context7 ID.
-2. `mcp__context7__query-docs` — query with the specific API, pattern, or feature you need.
-Check the project's package.json for installed versions first. In MULTI-ROLE mode, include these instructions in each agent prompt so agents can query docs themselves.
+2. `mcp__context7__query-docs` — query with the specific API, config key, or pattern you need.
+
+This applies to ALL roles: orchestrator, dispatched agents, and ad-hoc specialists. Check the project's package.json for installed versions first. In MULTI-ROLE mode, include these Context7 instructions in each agent prompt so agents query docs themselves before writing config.
 </available_mcps>
 </phase_2_role_assignment>
 
@@ -236,7 +238,7 @@ Each agent prompt must follow the template in references/agent-dispatch.md. The 
 
 <rule_3_execution_order>
 Decide the execution order based on file conflicts and dependencies:
-- **Parallel**: roles touch independent files with no data dependency → launch multiple Task calls in one message.
+- **Parallel**: roles touch independent files with no data dependency → launch multiple Task calls in one message. **CRITICAL: "parallel" means sending ALL independent Task() calls in a SINGLE assistant message. If you announce "dispatching 3 agents in parallel" you MUST include exactly 3 Task() tool calls in that same message. Announcing parallel dispatch and then sending only 1 Task() is a violation of this protocol.**
 - **Sequential**: one role's output is another's input → await the blocker first.
 - **Worktree isolation**: roles touch overlapping files but are otherwise independent → set `isolation: "worktree"` on the Task tool.
 </rule_3_execution_order>
@@ -366,7 +368,7 @@ As orchestrator, your responsibilities are: context gathering, agent dispatch, o
 **Dispatch steps:**
 1. Create TaskCreate entries for each role to track progress.
 2. For each role, dispatch a specialized agent via the Task tool with a self-contained prompt. Set the `model` parameter according to rule_4_model_selection.
-3. Launch independent agents in parallel. Launch dependent agents sequentially.
+3. **Launch independent agents in parallel — this means multiple Task() calls in a SINGLE message.** Do NOT sequentialize independent agents. If you have 3 independent tasks, your message must contain 3 Task() tool calls. Launch dependent agents sequentially (wait for blockers to complete first).
 4. Each agent runs its own quality gates before reporting completion. Review the agent's output and gate results before dispatching dependents.
 5. After all agents complete, proceed to phase 5 for the final cross-package quality gates.
 
@@ -403,7 +405,7 @@ For monorepos, run these for each affected workspace/package. Discover the works
 
 If a gate fails:
 - Read the error output carefully.
-- Fix the root cause (do not suppress or ignore errors).
+- **CRITICAL: Dispatch an agent to fix the errors — do NOT fix them inline in the orchestrator session.** Fixing errors inline exhausts the context window and triggers compaction mid-task. Dispatch a `debugger` agent (for investigation) or the appropriate specialist agent (e.g., `typescript-pro` for type errors, `api-builder` for route errors) to fix the issues. The orchestrator's role is to read the error, decide which agent can fix it, and dispatch — never to edit application code itself.
 - Re-run all gates from step 1, since a fix may introduce new issues.
 - Repeat until all gates pass cleanly.
 </phase_5_quality_gates>
@@ -430,6 +432,31 @@ After all quality gates pass, review whether the changes require documentation u
 
 Only update documentation directly affected by the changes. Do not create new documentation files unless the changes introduce a new package or major feature with no existing docs.
 </phase_6_documentation>
+
+<orchestrator_anti_patterns>
+## Orchestrator Anti-Patterns — NEVER do these
+
+These are recurring mistakes. Violating any of these rules degrades execution quality and wastes context.
+
+### 1. Never fix errors in the main thread
+When quality gates (tsc/lint/test/build) fail during execution, **dispatch an isolated agent** to fix them. Do NOT attempt fixes in the main orchestrator session. Fixing inline exhausts the context window and triggers compaction mid-task, losing critical execution state.
+
+### 2. Never guess-loop config fixes
+When a tool or config isn't working (e.g., OTel collector pipeline, Prometheus scraping, Docker networking, Drizzle config, Fastify plugin options), use **Context7 immediately** to query the library docs for the installed version. Do NOT try variations blindly. Query with `mcp__context7__resolve-library-id` + `mcp__context7__query-docs` **before** touching any config file.
+
+### 3. Never announce parallel dispatch without delivering it
+If you announce "dispatching 3 agents in parallel", your message MUST contain exactly 3 Task() tool calls. Announcing parallel dispatch and then only sending 1 Task() is a protocol violation. Count your Task() calls before sending. If agents are independent, they go in the SAME message.
+
+### 4. Never write application code as orchestrator
+The orchestrator reads, analyzes, dispatches, reviews, and runs quality gates. It does NOT write components, hooks, routes, services, migrations, tests, or any application logic. The only code the orchestrator may write is trivial integration glue (under 15 lines): barrel exports, small wiring imports, or config one-liners.
+
+### Self-check before sending each message
+Before sending any message during execution, verify:
+- [ ] Am I about to write application code? → STOP, dispatch an agent instead.
+- [ ] Am I about to modify a config without querying docs? → STOP, use Context7 first.
+- [ ] Did I announce N parallel agents? → Count my Task() calls. Are there N? If not, add the missing ones.
+- [ ] Did a quality gate fail? → STOP, dispatch a specialist agent to fix it.
+</orchestrator_anti_patterns>
 </workflow>
 
 <output>

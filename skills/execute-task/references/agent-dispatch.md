@@ -160,4 +160,6 @@ Report when done:
 1. **Subagents cannot spawn other subagents.** All dispatch happens from the main session.
 2. **Agent prompts should be concise and task-specific.** Project agents already include project context, conventions, principles, and quality gates in their system prompt. Only include information the agent doesn't already have.
 3. **Ad-hoc prompts must be fully self-contained.** The `general-purpose` agent has no project context, so the prompt must include everything: role, project context, conventions, skills to load, quality gates, and output format.
-4. **Review each agent's output before dispatching dependents.** If an agent failed or produced unexpected results, fix the issue before continuing.
+4. **Review each agent's output before dispatching dependents.** If an agent failed or produced unexpected results, dispatch a fix agent — do NOT fix inline in the orchestrator.
+5. **Parallel means parallel.** When dispatching independent agents, include ALL Task() calls in a single message. If you announce "dispatching 3 agents in parallel", there must be exactly 3 Task() tool calls in that message. Never sequentialize independent work.
+6. **Context7 before config.** Before writing or modifying ANY configuration file for a versioned tool, query Context7 to verify the correct syntax for the installed version. Do not guess-loop config variations.
