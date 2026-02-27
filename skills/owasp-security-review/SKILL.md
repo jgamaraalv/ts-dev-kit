@@ -86,13 +86,4 @@ Use these severity levels when reporting findings:
 
 ## Output format
 
-When reporting security findings, use this structure:
-
-```
-### [SEVERITY] A0X: Category Name — Brief title
-
-**Location**: `file:line`
-**Risk**: What can go wrong and the impact.
-**Finding**: What the code does wrong.
-**Fix**: Specific remediation with code example.
-```
+When reporting security findings, use the template in [template.md](template.md) for each finding.

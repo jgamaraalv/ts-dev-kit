@@ -5,6 +5,58 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2026-02-27
+
+### Added
+
+- `/codebase-adapter` skill: surgically adapts plugin agent/skill files to the host project on installation — updates domain area tables, skill maps, MCP references, quality gate commands, and package names without touching workflow logic
+- `/core-web-vitals` skill: LCP, INP, CLS reference covering thresholds, field vs lab tooling, diagnosis guides, and optimization patterns; includes `scripts/visualize.py` for generating interactive HTML reports from metric values or Lighthouse JSON output
+- `/debug` skill: end-to-end debugging workflow with multi-layer triage, single/multi-layer execution modes, and agent dispatch templates for backend, frontend, queue, and E2E layers
+- `/generate-prd` skill: produces structured Product Requirements Documents from feature descriptions or user stories
+- `/generate-task` skill: breaks PRD features into granular, agent-ready task files with acceptance criteria, affected packages, and quality gate commands
+- Dynamic context injection (`!`command`` syntax) to `/conventional-commits`: staged diff summary, full staged diff (up to 300 lines), and recent commit log are pre-injected before Claude receives the prompt
+- Dynamic context injection to `/debug`: last 10 git commits and working tree status are pre-injected at invocation time to accelerate triage
+- Dynamic context injection to `/codebase-adapter`: working directory, detected lockfile, installed agents, configured MCP servers, and `package.json` are pre-injected to reduce manual discovery
+- `allowed-tools` frontmatter to `/conventional-commits`, `/debug`, `/codebase-adapter`, and `/core-web-vitals` — whitelists the shell commands needed for dynamic injection and script execution
+- `scripts/` subdirectory convention for skills that bundle executable tools (Python, bash)
+
+### Changed
+
+- Renamed skill `/task` → `/execute-task` (update any project references or task files that invoke this command)
+
+### Breaking Changes
+
+- `/task` slash command removed; use `/execute-task` instead
+
+## [2.3.0] - 2026-02-26
+
+### Added
+
+- `/tanstack-query` skill: TanStack Query v5 (React Query) reference covering `useQuery`, `useMutation`, `useInfiniteQuery`, `QueryClient`, SSR/hydration with Next.js, optimistic updates, cache invalidation, and TypeScript patterns
+
+## [2.2.0] - 2026-02-26
+
+### Changed
+
+- Enforce mandatory agent delegation in all `/execute-task` execution modes — tasks are always dispatched to specialized agents; direct implementation by the orchestrator is no longer permitted
+
+## [2.1.0] - 2026-02-25
+
+### Added
+
+- Baseline capture phase to `/execute-task`: records the state of quality gates before any changes
+- Post-change verification phase to `/execute-task`: re-runs quality gates after the fix and diffs against baseline to confirm no regressions were introduced
+
+## [2.0.0] - 2026-02-24
+
+### Changed
+
+- Make all 15 agents fully repository-agnostic: agents now discover project conventions dynamically from `CLAUDE.md`, `package.json`, and the codebase — no hardcoded paths, package names, or workspace commands remain in any agent definition
+
+### Breaking Changes
+
+- Any project-specific overrides embedded directly in agent files are no longer applied; configure project context in your project's `CLAUDE.md` instead
+
 ## [1.2.1] - 2026-02-24
 
 ### Fixed

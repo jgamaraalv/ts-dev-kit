@@ -1,7 +1,7 @@
 {
   "name": "@jgamaraalv/ts-dev-kit",
-  "version": "2.3.0",
-  "description": "Claude Code plugin: 13 agents + 16 skills for TypeScript fullstack development",
+  "version": "3.0.0",
+  "description": "Claude Code plugin: 15 agents + 21 skills for TypeScript fullstack development",
   "author": "jgamaraalv",
   "license": "MIT",
   "repository": {

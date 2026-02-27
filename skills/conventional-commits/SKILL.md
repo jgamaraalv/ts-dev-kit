@@ -1,7 +1,19 @@
 ---
 name: conventional-commits
 description: "Write, review, and validate commit messages following the Conventional Commits v1.0.0 specification. Use when: (1) crafting a git commit message for any change, (2) reviewing or correcting an existing commit message, (3) choosing the right commit type for a change, (4) deciding how to mark a breaking change, (5) writing multi-line commits with body and footers, or (6) understanding how commits map to SemVer bumps (PATCH/MINOR/MAJOR). Covers all standard types: feat, fix, docs, chore, refactor, perf, test, build, ci, style, revert."
+allowed-tools: Bash(git *)
 ---
+
+<live_context>
+**Staged changes (summary):**
+!`git diff --cached --stat 2>/dev/null || echo "(nothing staged)"`
+
+**Staged diff:**
+!`git diff --cached 2>/dev/null | head -300 || echo "(nothing staged)"`
+
+**Recent commits (style reference):**
+!`git log --oneline -8 2>/dev/null || echo "(no commits yet)"`
+</live_context>
 
 ## Table of Contents
 

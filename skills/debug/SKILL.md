@@ -2,7 +2,16 @@
 name: debug
 description: "End-to-end debugging workflow that triages, reproduces, and fixes bugs across the full stack using multi-agent orchestration. Use when: (1) encountering runtime errors in the API or web app, (2) investigating failed requests or broken user flows, (3) debugging production issues via Sentry/PostHog, (4) tracing data flow across backend and frontend, or (5) the user reports a bug that spans multiple layers."
 argument-hint: "[error-description or sentry-issue-url]"
+allowed-tools: Bash(git *)
 ---
+
+<live_context>
+**Recent git changes (regression candidates):**
+!`git log --oneline -10 2>/dev/null || echo "(not a git repo)"`
+
+**Working tree status:**
+!`git status --short 2>/dev/null || echo "(not a git repo)"`
+</live_context>
 
 <trigger_examples>
 - "Debug why the form submission fails with a 500 error"
@@ -220,33 +229,7 @@ Quick reference for the most frequent bugs in this stack. Use these to accelerat
 </common_patterns>
 
 <output>
-When complete, produce a debug report:
-
-```
-## Bug resolved
-
-**Root cause**: one sentence describing why the bug occurred.
-**Fix**: one sentence describing what was changed to fix it.
-
-### Investigation path
-Brief trace of how the root cause was found (which layer, what evidence).
-
-### Files changed
-List every file created/modified.
-
-### Verification
-- Reproduction: pass (the original error no longer occurs)
-- tsc: pass/fail (per package)
-- lint: pass/fail (per package)
-- test: pass/fail (per package)
-- Browser: pass/fail (if applicable)
-
-### Skills loaded
-List every Skill() call made.
-
-### MCPs used
-List every MCP used, or "none".
-```
+When complete, produce a debug report using the template in [template.md](template.md).
 
 Do not add explanations, caveats, or follow-up suggestions unless the user asks.
 </output>

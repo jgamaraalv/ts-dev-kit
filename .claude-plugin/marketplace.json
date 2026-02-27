@@ -5,14 +5,14 @@
     "url": "https://github.com/jgamaraalv"
   },
   "metadata": {
-    "description": "TypeScript fullstack development agents and skills for Claude Code"
+    "description": "15 agents and 21 skills for TypeScript fullstack development with Claude Code"
   },
   "plugins": [
     {
       "name": "ts-dev-kit",
       "source": "./",
-      "description": "13 specialized agents and 16 skills for TypeScript fullstack development",
-      "version": "2.2.0",
+      "description": "15 specialized agents and 21 skills for TypeScript fullstack development",
+      "version": "3.0.0",
       "author": {
         "name": "jgamaraalv"
       },

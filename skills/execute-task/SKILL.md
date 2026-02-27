@@ -1,27 +1,59 @@
 ---
-name: task
-description: "Use this skill when the user wants to implement a new task in the project. Covers feature development, refactoring, bug fixes, and any code change that requires context analysis, role assignment, and structured execution. For changes under ~30 lines in a single file, implement directly without this workflow."
-argument-hint: "[task-description or task-md-file-path]"
+name: execute-task
+description: "Executes a task, either from a TASK_N.md file or a free-form description. Use when: (1) implementing a task from a TASK_N.md file, (2) the user provides a task file path or says 'execute this task', 'implement TASK_02', or 'run this task', (3) the user describes a task directly without a document. Accepts a file path or a free-form description — if the task document is missing required sections (scope, success criteria, verification plan), automatically calls /generate-tasks to produce it before executing."
+argument-hint: "[task-md-file-path | task-description]"
 ---
 
 <trigger_examples>
+- "Execute TASK_02"
+- "Implement docs/features/search/TASK_01.md"
+- "Run this task"
+- "Execute the task"
 - "Implement the search feature"
 - "Build the user creation flow end-to-end"
-- "Refactor the auth module to use shared schemas"
 - "Add the notifications endpoint to the API"
-- "Fix the pagination bug"
-- "Execute this task"
 </trigger_examples>
+
+<task>
+$ARGUMENTS
+</task>
 
 <workflow>
 Follow each phase in order. Each one feeds the next.
 
+<phase_0_intake>
+Resolve the input and ensure the task document is complete before executing.
+
+**Step 1 — Determine input type:**
+- If `$ARGUMENTS` looks like a file path (ends in `.md`, or starts with `/`, `./`, `docs/`, or contains a directory separator): read the file.
+- Otherwise: treat it as a free-form task description — skip to Step 3.
+
+**Step 2 — Validate the task document:**
+A task document is ready for execution when it contains ALL of:
+- `## Scope — Files` with at least one file entry
+- `## Success Criteria` with at least one testable criterion
+- `## Verification Plan` with baseline and post-change checks
+
+If all required sections are present → proceed to phase 1.
+
+**Step 3 — Generate the task document:**
+If the document is missing any required section, OR the input was a free-form description:
+
+1. Inform the user:
+   > **Task document incomplete.** Generating a structured task document via `/generate-tasks` before proceeding.
+2. Call `Skill(skill: "generate-tasks")` passing the original input as context.
+3. After generation, note the path of the saved `TASK_N.md` file.
+4. Read the generated file and confirm all required sections are present.
+5. Resume execution using the generated document — continue to phase 1.
+</phase_0_intake>
+
 <phase_1_context_analysis>
 Before writing any code, build a mental model of the task scope.
 
-1. Read the project CLAUDE.md and root package.json — understand the project structure, available commands, and dependency graph.
-2. Search the codebase for existing patterns — use Grep/Glob to find related files, similar implementations, and reusable code.
-3. Identify the affected packages/directories — determine which parts of the project will be touched and in what order.
+1. Read the resolved task document fully (path determined in phase 0).
+2. Read the project CLAUDE.md and root package.json — understand project structure, available commands, and dependency graph.
+3. Search the codebase for existing patterns — use Grep/Glob to find related files, similar implementations, and reusable code relevant to the task's file scope.
+4. Identify the affected packages/directories from the task's "Scope — Files" section.
 </phase_1_context_analysis>
 
 <phase_2_role_assignment>
@@ -223,7 +255,7 @@ The main session acts as the orchestrator:
 3. Dispatch the first wave of agents (those with no blockers).
 4. When a blocking agent completes, dispatch the next wave.
 5. After all agents complete, run the final quality gates.
-6. Produce the completion report (see references/output-templates.md).
+6. Produce the completion report (see template.md).
 
 Constraints:
 1. Subagents cannot spawn other subagents. All dispatch happens from the main session.
@@ -260,42 +292,44 @@ In PLAN mode: use EnterPlanMode to design the full plan. Once the user approves 
 </phase_2b_multi_role_decomposition>
 
 <phase_3_task_analysis>
-1. Extract task-defined criteria — scan the task document for explicit:
-   - **Success criteria** (checklists, acceptance conditions)
-   - **Initial/baseline tests** (to run BEFORE changes, for comparison)
-   - **Post-change tests** (to run AFTER changes, for verification)
-   - **Performance benchmarks** (bundle size, API call counts, Lighthouse metrics)
+Read the task document and load the criteria defined there. These are binding requirements for this execution.
 
-   Look for section names like: "Initial Tests", "Before Changes", "Baseline", "Post-Change Tests", "After Changes", "Success Criteria", "Acceptance Criteria", "Functionality Tests", "Performance Tests".
+1. Extract from the task document:
+   - **Success criteria** — exact conditions for task completion
+   - **Baseline checks** — what to run/capture BEFORE changes
+   - **Post-change checks** — what to verify AFTER changes
+   - **Performance benchmarks** — specific metrics with targets
+   - **Non-functional requirements** — scoped to this task's domain
+   - **Scope — Files** — the exact list of files to create or modify
 
-   If found, state them to the user:
-   > **Task-defined criteria found:**
-   > - Success criteria: [list]
-   > - Baseline tests (before changes): [list or "none"]
-   > - Post-change tests (after changes): [list or "none"]
+   State them to the user:
+   > **Task loaded:** [task title]
+   > - Dependencies: [list or "none"]
+   > - Files in scope: N files
+   > - Success criteria: [count] criteria
+   > - Baseline checks: [list]
+   > - Post-change checks: [list]
+   > - Performance targets: [list or "none defined"]
 
-   These are binding requirements that extend the default quality gates. Do not skip them.
+2. For questions about project libraries, use Context7 (`mcp__context7__resolve-library-id` → `mcp__context7__query-docs`) to query up-to-date documentation. If anything is ambiguous, ask the user before proceeding.
 
-2. Understand the request — identify what is being asked, which files will be created or modified, and what the expected outcome is.
-3. Define success criteria — combine the task's own criteria (from step 1) with your analysis. Task-defined criteria take priority over defaults.
-4. For questions about project libraries, use Context7 (`mcp__context7__resolve-library-id` → `mcp__context7__query-docs`) to query up-to-date documentation. If anything is ambiguous, ask the user before proceeding.
-5. Check for helpful MCPs — does the task involve browser testing, external docs?
-6. Plan the implementation order — determine which changes must happen first (e.g., types before lib before hooks before components before pages).
-7. Generate the verification plan — build a before/after test plan combining task-defined criteria with automatic checks based on domain and available MCPs. See references/verification-protocol.md for the full protocol.
-   - Detect available testing MCPs (playwright, chrome-devtools, or none).
-   - Map the task domain to checks: frontend → visual + performance, backend → API responses, database → schema state.
-   - Always include standard quality gates (lint, build, test) as baseline.
-   - Present the plan:
-     > **Verification plan:**
-     > - Baseline checks: [list]
-     > - MCPs for verification: [list or "none available — shell-only checks"]
-     > - Post-change checks: [list]
+3. Check MCP availability — use ToolSearch to detect which browser MCPs are available (playwright, chrome-devtools, or neither), then confirm against the task's "MCP Checks" section.
+
+4. Plan the implementation order from the task's file scope — build dependencies before dependents:
+   shared types → database schema → API layer → UI components → pages → tests.
+
+5. Confirm the verification plan with the user:
+   > **Verification plan:**
+   > - Baseline checks: [from task doc]
+   > - MCPs available: [detected list or "none — shell-only"]
+   > - Post-change checks: [from task doc]
 </phase_3_task_analysis>
 
 <phase_3b_baseline_capture>
 **MANDATORY.** Run the verification plan before writing any code to establish the baseline for comparison. Do NOT skip this phase.
 
 **Step 1: Standard quality gates** — run and record results (pass/fail, counts, bundle sizes).
+Discover the exact commands from package.json scripts for each affected package.
 
 **Step 2: MCP-based checks** — follow this decision tree in order:
 
@@ -360,7 +394,7 @@ Discover the available commands from package.json scripts for each affected pack
 2. Linting — run the project's lint command (e.g., `lint`, `eslint`)
 3. Tests (if available) — run the project's test command (e.g., `test`, `vitest`)
 4. Build — run the project's build command (e.g., `build`)
-5. Self-check — review your changes against the success criteria defined in phase 3.
+5. Self-check — review your changes against the success criteria from the task document.
 
 For monorepos, run these for each affected workspace/package. Discover the workspace command pattern from CLAUDE.md or the root package.json (e.g., `yarn workspace <name> <script>`, `pnpm --filter <name> <script>`, `npm -w <name> <script>`, `turbo run <script> --filter=<name>`).
 
@@ -378,9 +412,9 @@ After all quality gates pass, re-run the verification plan from phase 3b and com
 2. Compare each result against baseline:
    - **Quality gates**: must remain passing. New failures = regression.
    - **Visual checks** (if MCPs available): compare screenshots for unintended changes.
-   - **Performance** (if MCPs available): compare metrics. Regressions > 10% must be investigated.
+   - **Performance** (if MCPs available): compare metrics against task-defined benchmarks. Regressions > 10% must be investigated.
    - **API responses**: compare status codes and payload shapes. Breaking changes = regression.
-3. Build the comparison table (see references/output-templates.md for format).
+3. Build the comparison table (see template.md for format).
 
 If any regression is found, fix it, re-run phase 5 quality gates, then re-run this phase. Repeat until clean.
 </phase_5b_post_change_verification>
@@ -396,13 +430,7 @@ Only update documentation directly affected by the changes. Do not create new do
 </workflow>
 
 <output>
-When complete, produce the completion report including the baseline vs post-change comparison table. See references/output-templates.md for the exact format.
-
-If the task document specifies a results file path, also create the comparison report at that path.
+When complete, produce the completion report including the baseline vs post-change comparison table. See template.md for the exact format.
 
 Do not add explanations, caveats, or follow-up suggestions unless the user explicitly asks. The report is the final output.
 </output>
-
-<task>
-{{task}}
-</task>
