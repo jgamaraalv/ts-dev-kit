@@ -22,6 +22,10 @@ allowed-tools: Bash(git *)
 - "Debug the notification queue — jobs are stuck"
 </trigger_examples>
 
+<task>
+$ARGUMENTS
+</task>
+
 <workflow>
 Follow each phase in order. Each one feeds the next.
 
@@ -233,7 +237,3 @@ When complete, produce a debug report using the template in [template.md](templa
 
 Do not add explanations, caveats, or follow-up suggestions unless the user asks.
 </output>
-
-<task>
-$ARGUMENTS
-</task>

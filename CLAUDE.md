@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-ts-dev-kit is a **Claude Code plugin** (not a traditional app/library) that ships 15 specialized agents and 21 curated skills for TypeScript fullstack development. It is published to npm as `@jgamaraalv/ts-dev-kit` and distributed as markdown files — there is no build step, no TypeScript compilation, and no test suite.
+ts-dev-kit is a **Claude Code plugin** (not a traditional app/library) that ships 15 specialized agents and 22 curated skills for TypeScript fullstack development. It is published to npm as `@jgamaraalv/ts-dev-kit` and distributed as markdown files — there is no build step, no TypeScript compilation, and no test suite.
 
 ## Common Commands
 
@@ -28,7 +28,7 @@ There are no build, lint, or test commands — this is a content-only package.
 ```
 .claude/
   agents/          ← 15 agent definitions (markdown, YAML frontmatter)
-  skills/          ← 21 skill directories (symlinked from skills/)
+  skills/          ← 22 skill directories (symlinked from skills/)
   settings.local.json  ← Permission allowlist for Claude Code
 
 .claude-plugin/
@@ -37,7 +37,7 @@ There are no build, lint, or test commands — this is a content-only package.
 
 agents/            ← Published copy of .claude/agents (included in npm package)
 agent-memory/      ← 13 persistent memory directories (one per agent, excluded: multi-agent-coordinator, nextjs-expert)
-skills/            ← 21 skill directories (each has SKILL.md + optional references/ and scripts/)
+skills/            ← 22 skill directories (each has SKILL.md + optional references/ and scripts/)
 ```
 
 ### Agent Definitions (`.claude/agents/*.md`)
@@ -94,3 +94,4 @@ Several skills use the `!`command`` syntax to pre-inject live data before Claude
 | `/conventional-commits` | `git diff --cached`, `git log --oneline -8` |
 | `/debug` | `git log --oneline -10`, `git status --short` |
 | `/codebase-adapter` | `pwd`, lockfile, `.claude/agents/`, `.claude/settings.json`, `package.json` |
+| `/yolo` | `pwd`, `.devcontainer/devcontainer.json`, `docker info`, `command -v docker`, `command -v code` |

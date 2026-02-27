@@ -1,6 +1,6 @@
 # ts-dev-kit
 
-> 15 specialized agents + 21 curated skills for TypeScript fullstack development
+> 15 specialized agents + 22 curated skills for TypeScript fullstack development
 
 [![npm version](https://img.shields.io/npm/v/@jgamaraalv/ts-dev-kit)](https://www.npmjs.com/package/@jgamaraalv/ts-dev-kit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -30,7 +30,7 @@
 | typescript-pro          | Generics, type inference, conditional types             |
 | ux-optimizer            | User flows, form UX, friction reduction                 |
 
-### Skills (21)
+### Skills (22)
 
 | Skill                  | Slug                      | Domain                                            |
 | ---------------------- | ------------------------- | ------------------------------------------------- |
@@ -55,6 +55,7 @@
 | TanStack Query         | `/tanstack-query`         | React Query v5, caching, SSR/hydration            |
 | TypeScript Conventions | `/typescript-conventions` | Strict config, patterns, best practices           |
 | UI/UX Guidelines       | `/ui-ux-guidelines`       | Accessibility, layout, forms                      |
+| Yolo                   | `/yolo`                   | Devcontainer setup for autonomous Claude Code     |
 
 ---
 
@@ -206,6 +207,7 @@ Several skills use the `!`command`` syntax to pre-inject live data before Claude
 | `/conventional-commits` | Staged diff summary, full staged diff, last 8 commit messages |
 | `/debug` | Last 10 git commits, working tree status |
 | `/codebase-adapter` | Working directory, lockfile, installed agents, MCP servers, `package.json` |
+| `/yolo` | Project root, devcontainer presence, Docker status, VS Code installation |
 
 ---
 
