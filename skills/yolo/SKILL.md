@@ -252,14 +252,23 @@ Write the file using the reference firewall script. See [references/init-firewal
 
 Key security features:
 
+- `set -euo pipefail` — exits immediately on any error (strict mode)
 - Default-deny policy (DROP all INPUT, OUTPUT, FORWARD)
-- Whitelisted outbound only: npm registry, GitHub (dynamic IP fetch), Claude API, Sentry, StatsIG, VS Code marketplace
+- Whitelisted outbound only: npm registry, GitHub (dynamic IP fetch via `api.github.com/meta`), Claude API, Sentry, StatsIG, VS Code marketplace
 - DNS and SSH allowed
 - Localhost and host network allowed
+- Docker DNS rules preserved before flushing
+- Uses `ipset hash:net` for efficient CIDR matching (required — do NOT add fallback logic)
 - Startup verification: confirms `example.com` is blocked and `api.github.com` is reachable
-- Docker DNS rules preserved
-- Falls back to iptables-only rules if `ipset` kernel module is unavailable (common on Docker Desktop for Mac)
-- Full diagnostic log at `/tmp/firewall-init.log` for troubleshooting
+- Exits with error if any domain fails to resolve or any IP range is invalid
+
+**Critical anti-patterns to avoid in this script:**
+- Do NOT use `exec > >(tee ...)` for logging — process substitutions run via `sudo` never receive EOF, causing the script to hang indefinitely and VS Code to fail with "Unable to resolve resource"
+- Do NOT remove the `-e` flag from `set -euo pipefail` — silent error handling masks failures
+- Do NOT add `|| true` fallbacks for core iptables/ipset commands
+
+**Critical anti-pattern to avoid in `devcontainer.json`:**
+- Do NOT pipe `postStartCommand` through `tee` (e.g., `... | tee /tmp/firewall-init.log`) — this hides the script's real exit code and creates redundant I/O. The correct value is simply: `"postStartCommand": "sudo /usr/local/bin/init-firewall.sh"`
 
 ### Step 5 — Add `.devcontainer` to `.gitignore` (optional)
 

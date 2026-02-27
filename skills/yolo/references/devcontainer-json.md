@@ -57,7 +57,7 @@ Write this file to `.devcontainer/devcontainer.json`:
   },
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
   "workspaceFolder": "/workspace",
-  "postStartCommand": "sudo /usr/local/bin/init-firewall.sh 2>&1 | tee /tmp/firewall-init.log",
+  "postStartCommand": "sudo /usr/local/bin/init-firewall.sh",
   "waitFor": "postStartCommand"
 }
 ```
