@@ -36,7 +36,7 @@ There are no build, lint, or test commands — this is a content-only package.
   marketplace.json ← Marketplace listing metadata
 
 agents/            ← Published copy of .claude/agents (included in npm package)
-agent-memory/      ← 13 persistent memory directories (one per agent, excluded: multi-agent-coordinator, nextjs-expert)
+agent-memory/      ← 14 persistent memory directories (one per agent, excluded: multi-agent-coordinator (planner-only, no memory needed))
 skills/            ← 22 skill directories (each has SKILL.md + optional references/ and scripts/)
 ```
 

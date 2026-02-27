@@ -240,7 +240,12 @@ Each agent prompt must follow the template in references/agent-dispatch.md. The 
 Decide the execution order based on file conflicts and dependencies:
 - **Parallel**: roles touch independent files with no data dependency → launch multiple Task calls in one message. **CRITICAL: "parallel" means sending ALL independent Task() calls in a SINGLE assistant message. If you announce "dispatching 3 agents in parallel" you MUST include exactly 3 Task() tool calls in that same message. Announcing parallel dispatch and then sending only 1 Task() is a violation of this protocol.**
 - **Sequential**: one role's output is another's input → await the blocker first.
-- **Worktree isolation**: roles touch overlapping files but are otherwise independent → set `isolation: "worktree"` on the Task tool.
+- **Worktree isolation**: roles touch overlapping files but are otherwise independent → set `isolation: "worktree"` on the Task tool. Each agent gets an isolated copy of the repository; the worktree is auto-cleaned if the agent makes no changes.
+
+**Decision tree for overlapping files:**
+1. Do the agents have a data dependency (one needs the other's output)? → **Sequential**.
+2. Are the agents logically independent but touch some of the same files (e.g., both modify a shared barrel export, or both edit the same config)? → **Worktree isolation** — dispatch in parallel with `isolation: "worktree"` on each Task() call, then merge results.
+3. Do the agents touch completely separate files? → **Parallel** (no isolation needed).
 </rule_3_execution_order>
 
 <rule_4_model_selection>
@@ -369,8 +374,9 @@ As orchestrator, your responsibilities are: context gathering, agent dispatch, o
 1. Create TaskCreate entries for each role to track progress.
 2. For each role, dispatch a specialized agent via the Task tool with a self-contained prompt. Set the `model` parameter according to rule_4_model_selection.
 3. **Launch independent agents in parallel — this means multiple Task() calls in a SINGLE message.** Do NOT sequentialize independent agents. If you have 3 independent tasks, your message must contain 3 Task() tool calls. Launch dependent agents sequentially (wait for blockers to complete first).
-4. Each agent runs its own quality gates before reporting completion. Review the agent's output and gate results before dispatching dependents.
-5. After all agents complete, proceed to phase 5 for the final cross-package quality gates.
+4. **For parallel agents that touch overlapping files**, add `isolation: "worktree"` to each Task() call. This gives each agent an isolated copy of the repository, preventing edit conflicts. Worktrees are auto-cleaned when the agent makes no changes.
+5. Each agent runs its own quality gates before reporting completion. Review the agent's output and gate results before dispatching dependents.
+6. After all agents complete, proceed to phase 5 for the final cross-package quality gates.
 
 For the agent prompt template and dispatch details, see references/agent-dispatch.md.
 
@@ -450,11 +456,15 @@ If you announce "dispatching 3 agents in parallel", your message MUST contain ex
 ### 4. Never write application code as orchestrator
 The orchestrator reads, analyzes, dispatches, reviews, and runs quality gates. It does NOT write components, hooks, routes, services, migrations, tests, or any application logic. The only code the orchestrator may write is trivial integration glue (under 15 lines): barrel exports, small wiring imports, or config one-liners.
 
+### 5. Never dispatch parallel agents on overlapping files without worktree isolation
+When two or more agents run in parallel and touch any of the same files (shared barrel exports, config files, common modules), they will produce edit conflicts. Always set `isolation: "worktree"` on each Task() call so each agent works on an isolated copy of the repository. Skip isolation only when agents touch completely separate files.
+
 ### Self-check before sending each message
 Before sending any message during execution, verify:
 - [ ] Am I about to write application code? → STOP, dispatch an agent instead.
 - [ ] Am I about to modify a config without querying docs? → STOP, use Context7 first.
 - [ ] Did I announce N parallel agents? → Count my Task() calls. Are there N? If not, add the missing ones.
+- [ ] Am I dispatching parallel agents that touch the same files? → Add `isolation: "worktree"` to each Task() call.
 - [ ] Did a quality gate fail? → STOP, dispatch a specialist agent to fix it.
 </orchestrator_anti_patterns>
 </workflow>

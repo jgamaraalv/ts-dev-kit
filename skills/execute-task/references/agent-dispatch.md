@@ -97,6 +97,49 @@ Discover from the codebase:
 )
 ```
 
+## Dispatch with worktree isolation
+
+When parallel agents touch overlapping files (e.g., both modify a shared barrel export or the same config), add `isolation: "worktree"` to each Task() call. Each agent gets an isolated copy of the repository, preventing edit conflicts.
+
+```
+// Two agents that both touch shared/src/index.ts — dispatch in parallel with worktree isolation
+Task(
+  description: "Add user schema and migration",
+  subagent_type: "database-expert",
+  model: "sonnet",
+  isolation: "worktree",
+  prompt: """
+## Your task
+Create the users table schema and migration...
+
+## Success criteria
+- Schema exported from shared package
+- Migration runs cleanly
+"""
+)
+
+Task(
+  description: "Add notification schema and migration",
+  subagent_type: "database-expert",
+  model: "sonnet",
+  isolation: "worktree",
+  prompt: """
+## Your task
+Create the notifications table schema and migration...
+
+## Success criteria
+- Schema exported from shared package
+- Migration runs cleanly
+"""
+)
+```
+
+After both agents complete, review the worktree results. If both modified the same file (e.g., a barrel export), manually merge the additions into the main working directory.
+
+**When NOT to use worktree isolation:**
+- Agents touch completely separate files → plain parallel dispatch (no isolation overhead).
+- One agent depends on the other's output → sequential dispatch (await the blocker first).
+
 ## Agent type resolution
 
 Before dispatching, resolve the agent type for each role:

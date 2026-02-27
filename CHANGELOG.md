@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0] - 2026-02-27
+
+### Added
+
+- Publish `multi-agent-coordinator` agent to the npm package — previously only available locally in `.claude/agents/`, now shipped in `agents/` with all other agents
+- Publish `nextjs-expert` agent to the npm package — rewritten as repository-agnostic (no hardcoded paths, commands, or project-specific conventions); discovers project structure dynamically
+- Add `agent-memory/nextjs-expert/` persistent memory directory
+- Add worktree isolation support to `/execute-task` dispatch protocol: new decision tree in `rule_3_execution_order`, new dispatch step for `isolation: "worktree"` on parallel agents with overlapping files, new anti-pattern #5 ("never dispatch parallel agents on overlapping files without worktree isolation"), new self-check item
+- Add worktree isolation dispatch example to `/execute-task` agent-dispatch reference with concrete `isolation: "worktree"` Task() calls and guidance on when NOT to use isolation
+- Add `isolation` field to `multi-agent-coordinator` dispatch plan output format — parallel tasks that touch overlapping files now include `isolation: worktree`
+- Add worktree isolation rule to `multi-agent-coordinator` planning guidelines
+
+### Changed
+
+- Agent count in published `agents/` directory: 13 → 15 (now matches the "15 agents" stated in all manifests)
+- Agent memory count: 13 → 14 directories (added nextjs-expert; multi-agent-coordinator excluded as planner-only)
+- CLAUDE.md content layout updated to reflect correct agent-memory count (14) and exclusion list (only multi-agent-coordinator)
+
+### BREAKING CHANGE
+
+- All 15 agents are now published in the npm package. Projects that relied on the previous 13-agent subset and have custom agent overrides for `multi-agent-coordinator` or `nextjs-expert` may experience conflicts with the newly published versions.
+
 ## [3.3.0] - 2026-02-27
 
 ### Added
