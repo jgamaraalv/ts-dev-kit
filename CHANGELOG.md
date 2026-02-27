@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2026-02-27
+
+### Added
+
+- Cross-scope agent name resolution: `/execute-task` and `/debug` dispatch protocols now detect whether agents are registered with a plugin prefix (`ts-dev-kit:agent-name`) and use the correct `subagent_type` automatically
+- `/yolo` Phase 1.5 — Ensure plugin availability: when ts-dev-kit is installed as a plugin, copies agents, skills, and agent-memory into the project before mounting the devcontainer so they're accessible inside the container
+- `/codebase-adapter` scope-aware discovery: phase 2 now searches agents and skills across project scope (`.claude/`), plugin scope (`node_modules/`), and personal scope (`~/.claude/`)
+
+### Fixed
+
+- Agent memory paths in all 13 agents now use dynamic resolution (`agent-memory/<name>/` at project root first, fallback to `.claude/agent-memory/<name>/`) instead of a hardcoded `.claude/` prefix
+- `/core-web-vitals` visualize script path no longer hardcoded to `~/.claude/skills/` — now discovers the correct path across all installation scopes
+
 ## [3.1.3] - 2026-02-27
 
 ### Fixed

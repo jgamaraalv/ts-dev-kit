@@ -71,7 +71,7 @@ If implementing fixes, run the project's standard quality checks for every packa
   </quality_gates>
 
 <agent-memory>
-You have a persistent memory directory at `.claude/agent-memory/security-scanner/`. Its contents persist across conversations.
+You have a persistent memory directory. Its contents persist across conversations. To find it, look for `agent-memory/security-scanner/` at the project root first, then fall back to `.claude/agent-memory/security-scanner/`. Use whichever path exists.
 
 As you work, consult your memory files to build on previous experience. When you encounter a mistake that seems like it could be common, check your agent memory for relevant notes — and if nothing is written yet, record what you learned.
 

@@ -19,7 +19,7 @@ Working directory: !`pwd`
 
 Lockfile detected: !`ls bun.lock pnpm-lock.yaml yarn.lock package-lock.json 2>/dev/null | head -1 || echo "none"`
 
-Agents installed: !`ls .claude/agents/ 2>/dev/null | tr '\n' ' ' || echo "(not found)"`
+Agents installed: !`ls .claude/agents/ 2>/dev/null | tr '\n' ' ' || ls agents/ 2>/dev/null | tr '\n' ' ' || echo "(not found)"`
 
 MCP servers configured: !`python3 -c "import json; s=json.load(open('.claude/settings.json')); print(', '.join(s.get('mcpServers',{}).keys()) or '(none)')" 2>/dev/null || echo "(not found)"`
 
@@ -91,9 +91,17 @@ Discover with Read, Glob, Grep — verify everything, assume nothing.
 - typecheck, lint, test, build command names
 - Compose the full run command per workspace (e.g., `pnpm --filter @acme/api typecheck`)
 
-**Available skills** — list directories in `[plugin-root]/skills/`
+**Available skills** — search across all scopes in order:
+1. `[plugin-root]/skills/` (plugin or project-local)
+2. `.claude/skills/` in the project root (project scope)
+3. `~/.claude/skills/` (personal scope)
+Merge and deduplicate — plugin-root takes priority.
 
-**Available agents** — list files in `[plugin-root]/.claude/agents/`
+**Available agents** — search across all scopes in order:
+1. `[plugin-root]/agents/` and `[plugin-root]/.claude/agents/` (plugin or project-local)
+2. `.claude/agents/` in the project root (project scope)
+3. `~/.claude/agents/` (personal scope)
+Merge and deduplicate — plugin-root takes priority.
 
 **Available MCPs** — read `.claude/settings.json` in project root (and `~/.claude/settings.json` as fallback). Extract `mcpServers` keys.
 </phase_2_project_discovery>

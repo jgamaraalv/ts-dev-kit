@@ -44,6 +44,8 @@ Agents with preloaded skills (via `skills` frontmatter) do NOT need Skill() call
 | typescript-pro | (none) | — |
 | playwright-expert | (none) | — |
 
+> **Note:** When ts-dev-kit is installed as a plugin, agent names are prefixed with the plugin namespace (e.g., `ts-dev-kit:api-builder` instead of `api-builder`). Always check the available agents in your context and use the full registered name as `subagent_type`.
+
 ### Agent tool restrictions
 
 | Agent | Restriction |
@@ -68,9 +70,11 @@ All agents default to `sonnet`. Override with the Task tool's `model` parameter 
 ## Dispatch example
 
 ```
+// Use the agent name as registered in your context.
+// Project-scoped: "api-builder". Plugin-scoped: "ts-dev-kit:api-builder".
 Task(
   description: "Build resource API routes",
-  subagent_type: "api-builder",
+  subagent_type: "api-builder",  // or "ts-dev-kit:api-builder" if plugin-scoped
   model: "sonnet",
   prompt: """
 ## Your task
@@ -97,7 +101,10 @@ Discover from the codebase:
 
 Before dispatching, resolve the agent type for each role:
 
-1. **Check `.claude/agents/`** — if a project agent matches the sub-area from the domain mapping (e.g., `database-expert` for DB work, `api-builder` for endpoints, `react-specialist` for components), use it as `subagent_type`.
+1. **Resolve the agent name for the current scope.** Agents may be registered with a plugin prefix depending on how ts-dev-kit is installed:
+   - **Project scope** (`.claude/agents/`): short name — e.g., `api-builder`
+   - **Plugin scope**: prefixed — e.g., `ts-dev-kit:api-builder`
+   Check which agents are available in your context and use the exact registered name as `subagent_type`.
 2. **Use a built-in agent type** — if the Task tool has a matching built-in type (e.g., `typescript-pro`, `performance-engineer`, `security-scanner`), use it directly.
 3. **Create an ad-hoc specialist** — if no existing agent matches, use `subagent_type: "general-purpose"` and embed the full specialist definition in the prompt.
 

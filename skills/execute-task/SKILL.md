@@ -176,11 +176,11 @@ Do not decompose if:
 Each role gets its own persona, skill set, context files, and success criteria.
 
 <example>
-Role A: Database specialist (sub-area: Database). Agent: database-expert. Task: design schema + migration for the new feature. Skills: drizzle-pg, postgresql.
-Role B: API endpoint developer (sub-area: Endpoints). Agent: api-builder. Task: build REST routes consuming the new schema. Skills: fastify-best-practices.
-Role C: Component architect (sub-area: Components). Agent: react-specialist. Task: build the result card and list components. Skills: react-best-practices, composition-patterns.
+Role A: Database specialist (sub-area: Database). Agent: database-expert (or ts-dev-kit:database-expert if plugin-scoped). Task: design schema + migration for the new feature. Skills: drizzle-pg, postgresql.
+Role B: API endpoint developer (sub-area: Endpoints). Agent: api-builder (or ts-dev-kit:api-builder). Task: build REST routes consuming the new schema. Skills: fastify-best-practices.
+Role C: Component architect (sub-area: Components). Agent: react-specialist (or ts-dev-kit:react-specialist). Task: build the result card and list components. Skills: react-best-practices, composition-patterns.
 Role D: Page builder (sub-area: Pages/routing). Agent: general-purpose (ad-hoc). Task: wire components into the search results page with data fetching. Skills: nextjs-best-practices.
-Role E: TypeScript library developer. Agent: typescript-pro. Task: add shared schemas and types. Skills: none extra.
+Role E: TypeScript library developer. Agent: typescript-pro (or ts-dev-kit:typescript-pro). Task: add shared schemas and types. Skills: none extra.
 </example>
 </rule_1_define_roles_independently>
 
@@ -188,8 +188,11 @@ Role E: TypeScript library developer. Agent: typescript-pro. Task: add shared sc
 For each role, spawn a specialized subagent via the Task tool.
 
 **Selecting the agent type:**
-1. Check if a project agent exists in `.claude/agents/` that matches the sub-area (see domain_areas table above for the mapping).
-2. If a matching agent exists, use its name as `subagent_type` (e.g., `database-expert`, `api-builder`, `react-specialist`).
+1. **Resolve the agent name for the current scope.** Agents may be registered under different names depending on how ts-dev-kit is installed:
+   - **Project scope** (`.claude/agents/`): short name — e.g., `database-expert`
+   - **Plugin scope**: prefixed with the plugin namespace — e.g., `ts-dev-kit:database-expert`
+   Before dispatching, check which agents are available in your context. If you see agents with a `ts-dev-kit:` prefix, use the prefixed name as `subagent_type`. If agents are available by short name, use the short name.
+2. If a matching agent exists (in any scope), use its resolved name as `subagent_type`.
 3. If no matching agent exists, use `general-purpose` as `subagent_type` and embed the full role definition directly in the prompt — this creates an ad-hoc specialist without needing a .md file.
 
 **Ad-hoc agent creation** — when `subagent_type: "general-purpose"` is used as a specialist surrogate, the prompt must include:

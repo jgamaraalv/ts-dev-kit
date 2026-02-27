@@ -48,8 +48,11 @@ Follow this decision tree strictly. Each phase gates the next.
 START
   │
   ├─ Phase 1: Detect devcontainer
-  │    ├─ EXISTS → Phase 2
-  │    └─ MISSING → Phase 5 (install) → Phase 2
+  │    ├─ EXISTS → Phase 1.5
+  │    └─ MISSING → Phase 5 (install) → Phase 1.5
+  │
+  ├─ Phase 1.5: Ensure plugin availability
+  │    └─ Copy agents/skills/agent-memory into project if missing → Phase 2
   │
   ├─ Phase 2: Check Docker
   │    ├─ RUNNING → Phase 3
@@ -62,7 +65,7 @@ START
   │    └─ Start Docker Desktop/daemon → Phase 3
   │
   └─ Phase 5: Install devcontainer
-       └─ Scaffold .devcontainer/ → Phase 2
+       └─ Scaffold .devcontainer/ → Phase 1.5
 ```
 
 <phase_1_detect>
@@ -72,15 +75,98 @@ START
 Check whether `.devcontainer/devcontainer.json` exists in the project root.
 
 1. Read the `<live_context>` above for the pre-injected detection result.
-2. If **YES** — announce to the user and proceed to Phase 2:
+2. If **YES** — announce to the user and proceed to Phase 1.5:
 
-> **DEVCONTAINER DETECTED** — `.devcontainer/` found. Checking Docker status...
+> **DEVCONTAINER DETECTED** — `.devcontainer/` found. Checking plugin availability...
 
 3. If **NO** — announce and proceed to Phase 5:
 
 > **NO DEVCONTAINER FOUND** — I'll set one up using the Claude Code reference implementation.
 
 </phase_1_detect>
+
+<phase_1_5_ensure_plugin>
+
+## Phase 1.5 — Ensure plugin availability
+
+The devcontainer mounts only the project directory at `/workspace`. If ts-dev-kit is installed as a plugin (outside the project), its agents, skills, and agent-memory won't be available inside the container. This phase copies them into the project so they're accessible.
+
+### Step 1 — Check if agents and skills already exist in the project
+
+```bash
+ls .claude/agents/*.md 2>/dev/null && echo "AGENTS_PRESENT" || echo "AGENTS_MISSING"
+ls .claude/skills/*/SKILL.md 2>/dev/null && echo "SKILLS_PRESENT" || echo "SKILLS_MISSING"
+```
+
+If both are present, skip to Phase 2:
+
+> **PLUGIN FILES PRESENT** — agents and skills found in project. Checking Docker status...
+
+### Step 2 — Locate the plugin source
+
+If agents or skills are missing, search for the plugin in these locations (in order):
+
+1. `node_modules/@jgamaraalv/ts-dev-kit/` (npm-installed plugin)
+2. The directory containing this skill file (if invoked from a known path)
+
+```bash
+# Try npm location
+PLUGIN_SRC="node_modules/@jgamaraalv/ts-dev-kit"
+if [ ! -d "$PLUGIN_SRC/agents" ]; then
+  echo "Plugin not found in node_modules"
+  PLUGIN_SRC=""
+fi
+```
+
+If the plugin source cannot be found, inform the user and proceed to Phase 2 (the devcontainer will work but without ts-dev-kit agents):
+
+> **PLUGIN NOT FOUND** — Could not locate ts-dev-kit plugin files. The devcontainer will work but agents and skills won't be available. Install the plugin with `npm install -D @jgamaraalv/ts-dev-kit` to fix this.
+
+### Step 3 — Copy plugin files into the project
+
+```bash
+# Copy agents
+mkdir -p .claude/agents
+cp "$PLUGIN_SRC"/agents/*.md .claude/agents/
+
+# Copy skills (symlink directories to save space)
+mkdir -p .claude/skills
+for skill_dir in "$PLUGIN_SRC"/skills/*/; do
+  skill_name=$(basename "$skill_dir")
+  if [ ! -e ".claude/skills/$skill_name" ]; then
+    cp -r "$skill_dir" ".claude/skills/$skill_name"
+  fi
+done
+
+# Copy agent-memory scaffolds (don't overwrite existing memories)
+if [ -d "$PLUGIN_SRC/agent-memory" ]; then
+  for mem_dir in "$PLUGIN_SRC"/agent-memory/*/; do
+    mem_name=$(basename "$mem_dir")
+    if [ ! -d "agent-memory/$mem_name" ]; then
+      mkdir -p "agent-memory/$mem_name"
+      cp -n "$mem_dir"* "agent-memory/$mem_name/" 2>/dev/null || true
+    fi
+  done
+fi
+```
+
+### Step 4 — Suggest .gitignore update
+
+Check if these copied directories are already in `.gitignore`. If not, inform the user:
+
+> **PLUGIN FILES COPIED** — Agents, skills, and agent-memory copied into the project for devcontainer access.
+>
+> Consider adding these to `.gitignore` if you don't want to commit them:
+> ```
+> # ts-dev-kit plugin files (copied for devcontainer)
+> .claude/agents/
+> .claude/skills/
+> agent-memory/
+> ```
+
+Proceed to Phase 2.
+
+</phase_1_5_ensure_plugin>
 
 <phase_2_check_docker>
 
@@ -288,9 +374,9 @@ cat .devcontainer/devcontainer.json | head -5
 
 Announce completion:
 
-> **DEVCONTAINER INSTALLED** — `.devcontainer/` is ready with Dockerfile, firewall script, and configuration. Proceeding to check Docker...
+> **DEVCONTAINER INSTALLED** — `.devcontainer/` is ready with Dockerfile, firewall script, and configuration. Checking plugin availability...
 
-Return to Phase 2.
+Return to Phase 1.5.
 
 </phase_5_install_devcontainer>
 

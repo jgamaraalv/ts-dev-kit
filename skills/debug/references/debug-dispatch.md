@@ -72,7 +72,7 @@ After investigation, dispatch the appropriate **specialist agent** (not necessar
 [Specific changes needed — be precise about expected behavior]
 ```
 
-Use the agent type that matches the fix domain:
+Use the agent type that matches the fix domain. If ts-dev-kit is installed as a plugin, use the prefixed name (e.g., `ts-dev-kit:api-builder`). Check which agents are available in your context and use the exact registered name:
 - API route fix -> `api-builder` (preloads fastify-best-practices)
 - Database/query fix -> `database-expert` (preloads drizzle-pg, postgresql)
 - Component fix -> `react-specialist` (preloads react-best-practices, composition-patterns)
@@ -83,6 +83,8 @@ Use the agent type that matches the fix domain:
 ---
 
 ## Role-specific prompts
+
+> **Note:** All agent types below may be prefixed with `ts-dev-kit:` when the plugin is installed in plugin scope (e.g., `ts-dev-kit:debugger`). Check the available agents in your context and use the exact registered name.
 
 ### Backend debugger
 
@@ -166,9 +168,10 @@ Verification focus:
 # Dispatch: MULTI-LAYER
 
 # Wave 1: Parallel investigation
+# Use "debugger" or "ts-dev-kit:debugger" depending on scope
 Task(
   description: "Debug resource creation API endpoint",
-  subagent_type: "debugger",
+  subagent_type: "debugger",  // or "ts-dev-kit:debugger" if plugin-scoped
   model: "sonnet",
   prompt: """
 ## Bug description
@@ -195,7 +198,7 @@ Returns 200, but GET /api/<resource> returns empty array.
 
 Task(
   description: "Debug resource list page",
-  subagent_type: "debugger",
+  subagent_type: "debugger",  // or "ts-dev-kit:debugger" if plugin-scoped
   model: "sonnet",
   prompt: """
 ## Bug description
@@ -219,12 +222,12 @@ stale data.
 )
 
 # Wave 2: Dispatch fixes using specialist agents matching the fix domain
-# e.g., api-builder for API fix, react-specialist for frontend fix
+# e.g., api-builder (or ts-dev-kit:api-builder) for API fix
 
 # Wave 3: E2E verification
 Task(
   description: "Verify resource creation flow",
-  subagent_type: "playwright-expert",
+  subagent_type: "playwright-expert",  // or "ts-dev-kit:playwright-expert"
   model: "haiku",
   prompt: """
 ## Your task

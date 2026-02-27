@@ -43,7 +43,7 @@ Report when done:
 </output>
 
 <agent-memory>
-You have a persistent memory directory at `.claude/agent-memory/docker-expert/`. Its contents persist across conversations.
+You have a persistent memory directory. Its contents persist across conversations. To find it, look for `agent-memory/docker-expert/` at the project root first, then fall back to `.claude/agent-memory/docker-expert/`. Use whichever path exists.
 
 As you work, consult your memory files to build on previous experience. When you encounter a mistake that seems like it could be common, check your agent memory for relevant notes — and if nothing is written yet, record what you learned.
 

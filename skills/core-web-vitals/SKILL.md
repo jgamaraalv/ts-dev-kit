@@ -75,18 +75,25 @@ correlates with INP but does not replace field measurement.
 
 When the user provides metric values or a Lighthouse JSON file, generate an interactive HTML report and open it in the browser:
 
+To locate the script, find `scripts/visualize.py` relative to this skill's directory. The path depends on how ts-dev-kit is installed:
+- **Project scope**: `skills/core-web-vitals/scripts/visualize.py` or `.claude/skills/core-web-vitals/scripts/visualize.py`
+- **Personal scope**: `~/.claude/skills/core-web-vitals/scripts/visualize.py`
+- **Plugin scope**: resolve via `node_modules/@jgamaraalv/ts-dev-kit/skills/core-web-vitals/scripts/visualize.py`
+
+Use `find` or `ls` to discover the actual path, then run:
+
 ```bash
-# From manual values
-python3 ~/.claude/skills/core-web-vitals/scripts/visualize.py \
+# From manual values (replace SCRIPT_PATH with the discovered path)
+python3 SCRIPT_PATH/visualize.py \
   --lcp 2.1 --inp 180 --cls 0.05 \
   --url https://example.com
 
 # From a Lighthouse JSON output
-python3 ~/.claude/skills/core-web-vitals/scripts/visualize.py \
+python3 SCRIPT_PATH/visualize.py \
   --lighthouse lighthouse-report.json
 
 # Custom output path, no auto-open
-python3 ~/.claude/skills/core-web-vitals/scripts/visualize.py \
+python3 SCRIPT_PATH/visualize.py \
   --lcp 3.8 --inp 420 --cls 0.12 \
   --output cwv-report.html --no-open
 ```
