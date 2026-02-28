@@ -23,6 +23,8 @@ Redis-backed queue system for Node.js. Four core classes: `Queue`, `Worker`, `Qu
 
 `yarn add bullmq` — requires Redis 5.0+ with `maxmemory-policy=noeviction`.
 
+<quick_reference>
+
 ## Quick Start
 
 ```ts
@@ -73,6 +75,22 @@ queueEvents.on("failed", ({ jobId, failedReason }) => {
 });
 ```
 
+## Job Lifecycle States
+
+```
+add() → wait / prioritized / delayed
+         ↓
+       active → completed
+         ↓
+       failed → (retry) → wait/delayed
+```
+
+With FlowProducer: jobs can also be in `waiting-children` state until all children complete.
+
+</quick_reference>
+
+<rules>
+
 ## Connections
 
 BullMQ uses ioredis internally. Pass `connection` options or an existing ioredis instance.
@@ -102,6 +120,10 @@ const w1 = new Worker("q1", async (job) => {}, { connection: workerConn });
 - Do NOT use ioredis `keyPrefix` option — use BullMQ's `prefix` option instead.
 - `QueueEvents` cannot share connections (uses blocking Redis commands).
 - Redis MUST have `maxmemory-policy=noeviction`.
+
+</rules>
+
+<examples>
 
 ## Queue
 
@@ -179,6 +201,10 @@ const worker = new Worker<JobData, JobReturn>("paint", async (job) => {
 });
 ```
 
+</examples>
+
+<events>
+
 ## Events
 
 **Worker events** (local to that worker instance):
@@ -205,17 +231,9 @@ const worker = new Worker<JobData, JobReturn>("paint", async (job) => {
 
 Event stream is auto-trimmed (~10,000 events). Configure via `streams.events.maxLen`.
 
-## Job Lifecycle States
+</events>
 
-```
-add() → wait / prioritized / delayed
-         ↓
-       active → completed
-         ↓
-       failed → (retry) → wait/delayed
-```
-
-With FlowProducer: jobs can also be in `waiting-children` state until all children complete.
+<references>
 
 ## Advanced Topics
 
@@ -223,3 +241,5 @@ With FlowProducer: jobs can also be in `waiting-children` state until all childr
 - **Flows and schedulers** (FlowProducer, parent-child, job schedulers, cron): See [references/flows-and-schedulers.md](references/flows-and-schedulers.md)
 - **Patterns** (step jobs, idempotent, throttle, manual rate-limit): See [references/patterns.md](references/patterns.md)
 - **Production** (shutdown, Redis config, retries, backoff, monitoring): See [references/production.md](references/production.md)
+
+</references>

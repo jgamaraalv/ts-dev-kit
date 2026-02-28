@@ -5,6 +5,8 @@ description: "Review code and architectures against the OWASP Top 10:2025 — th
 
 # OWASP Top 10:2025 Security Review
 
+<quick_reference>
+
 ## Quick reference
 
 | #   | Category                              | Key risk                                                               | Avg incidence |
@@ -20,9 +22,23 @@ description: "Review code and architectures against the OWASP Top 10:2025 — th
 | A09 | Security Logging & Alerting Failures  | Missing audit logs, no alerting, log injection, sensitive data in logs | 3.91%         |
 | A10 | Mishandling of Exceptional Conditions | Failing open, info leakage via errors, unchecked return values         | 2.95%         |
 
+## Severity classification
+
+Use these severity levels when reporting findings:
+
+- **Critical**: Directly exploitable, leads to full system compromise or mass data breach (e.g., SQLi with no parameterization, hardcoded admin credentials, missing auth on admin endpoints).
+- **High**: Exploitable with moderate effort, significant data exposure or privilege escalation (e.g., IDOR, weak password hashing, SSRF, deserialization of untrusted data).
+- **Medium**: Exploitable under specific conditions, limited impact (e.g., missing CSRF protection, verbose error messages, missing security headers).
+- **Low**: Defense-in-depth issue, minimal direct impact (e.g., missing rate limiting, incomplete logging, suboptimal crypto configuration).
+
+</quick_reference>
+
+<workflow>
+
 ## Workflows
 
-### 1. Code review for security
+<phase_1_code_review>
+### Code review for security
 
 Systematically check the code against each relevant category:
 
@@ -41,8 +57,10 @@ Priority order for review (highest impact first):
 - `[MEDIUM]` Error handling → A10 (Exceptional Conditions), A09 (Logging)
 - `[MEDIUM]` Architecture/design → A06 (Insecure Design)
 - `[MEDIUM]` Data integrity → A08 (Integrity Failures)
+</phase_1_code_review>
 
-### 2. Security audit checklist
+<phase_2_audit_checklist>
+### Security audit checklist
 
 Generate a checklist for a feature or codebase:
 
@@ -50,8 +68,10 @@ Generate a checklist for a feature or codebase:
 2. For each of the 10 categories, determine if it applies.
 3. For applicable categories, load the reference file and produce a checklist of items to verify.
 4. Output a markdown checklist grouped by category.
+</phase_2_audit_checklist>
 
-### 3. Remediation guidance
+<phase_3_remediation>
+### Remediation guidance
 
 When a vulnerability is identified:
 
@@ -59,6 +79,11 @@ When a vulnerability is identified:
 2. Load the corresponding reference file.
 3. Apply the prevention checklist to produce a specific, actionable fix.
 4. Provide a code example of the fix when possible.
+</phase_3_remediation>
+
+</workflow>
+
+<references>
 
 ## Reference files
 
@@ -75,15 +100,8 @@ Load the relevant file when you need detailed guidance for a specific category:
 - **A09 Logging & Alerting** — audit trails, log injection, alerting, sensitive data in logs: [references/a09-logging-alerting-failures.md](references/a09-logging-alerting-failures.md)
 - **A10 Exceptional Conditions** — error handling, fail-closed, resource cleanup, info leakage: [references/a10-exceptional-conditions.md](references/a10-exceptional-conditions.md)
 
-## Severity classification
+</references>
 
-Use these severity levels when reporting findings:
-
-- **Critical**: Directly exploitable, leads to full system compromise or mass data breach (e.g., SQLi with no parameterization, hardcoded admin credentials, missing auth on admin endpoints).
-- **High**: Exploitable with moderate effort, significant data exposure or privilege escalation (e.g., IDOR, weak password hashing, SSRF, deserialization of untrusted data).
-- **Medium**: Exploitable under specific conditions, limited impact (e.g., missing CSRF protection, verbose error messages, missing security headers).
-- **Low**: Defense-in-depth issue, minimal direct impact (e.g., missing rate limiting, incomplete logging, suboptimal crypto configuration).
-
-## Output format
-
+<output>
 When reporting security findings, use the template in [template.md](template.md) for each finding.
+</output>

@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.0] - 2026-02-28
+
+### Changed
+
+- Standardize all 15 reference and workflow skills to use semantic XML tags (`<rules>`, `<quick_reference>`, `<examples>`, `<anti_patterns>`, `<gotchas>`, `<constraints>`, `<references>`, `<workflow>`, `<output>`) — previously only 7 workflow skills used XML tags while 15 reference skills used plain markdown headings
+- Skills with multi-step workflows (`owasp-security-review`, `ui-ux-guidelines`) now use `<workflow>` with numbered `<phase_N_name>` tags matching the pattern established by `debug`, `execute-task`, and `generate-prd`
+
+### BREAKING CHANGE
+
+- All skill SKILL.md files now wrap content sections in XML tags. Custom forks or overrides that parse skill files by markdown heading structure may need updating to account for the new XML tag wrappers.
+
 ## [4.0.0] - 2026-02-27
 
 ### Added

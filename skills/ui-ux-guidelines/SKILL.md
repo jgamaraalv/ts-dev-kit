@@ -7,15 +7,7 @@ description: "Review UI code for Web Interface Guidelines compliance. Use when a
 
 Dispatch hub for UI/UX rules. Load the relevant reference file for full details.
 
-## Contents
-
-1. [Rule Categories](#rule-categories-by-priority)
-2. [Workflows](#workflows)
-3. [Anti-patterns](#anti-patterns-flag-these)
-4. [Output Format](#code-review-output-format)
-5. [Reference Files](#reference-files)
-
----
+<rules>
 
 ## Rule Categories by Priority
 
@@ -31,31 +23,41 @@ Dispatch hub for UI/UX rules. Load the relevant reference file for full details.
 | 8        | Content & Navigation | MEDIUM   | `forms-content-checklist`       |
 | 9        | Charts & Data        | LOW      | `layout-typography-animation`   |
 
----
+</rules>
+
+<workflow>
 
 ## Workflows
 
-### 1. Review UI code
+<phase_1_review_ui>
+### Review UI code
 
 1. Read the target file(s).
 2. Load the relevant reference file(s) from `references/` based on what the code contains.
 3. Check each applicable rule. Report violations in the output format below.
+</phase_1_review_ui>
 
-### 2. Build new component
+<phase_2_build_component>
+### Build new component
 
 1. Load `references/accessibility-and-interaction.md` -- all components must meet CRITICAL rules.
 2. Load additional references based on component type:
    - Form component -> `references/forms-content-checklist.md`
    - Layout/visual component -> `references/layout-typography-animation.md`
 3. Follow rules during implementation.
+</phase_2_build_component>
 
-### 3. Pre-delivery checklist
+<phase_3_pre_delivery>
+### Pre-delivery checklist
 
 1. Load `references/forms-content-checklist.md` for the full checklist.
 2. Load `references/accessibility-and-interaction.md` for the interaction checklist.
 3. Walk through every checkbox before shipping.
+</phase_3_pre_delivery>
 
----
+</workflow>
+
+<anti_patterns>
 
 ## Anti-patterns (flag these)
 
@@ -70,7 +72,9 @@ Dispatch hub for UI/UX rules. Load the relevant reference file for full details.
 - Hardcoded date/number formats -- use `Intl.*`
 - Icon-only buttons without `aria-label`
 
----
+</anti_patterns>
+
+<output>
 
 ## Code Review Output Format
 
@@ -78,7 +82,9 @@ Group findings by file. Use `file:line` format (VS Code clickable). Be terse -- 
 
 See [template.md](template.md) for the expected output format.
 
----
+</output>
+
+<references>
 
 ## Reference Files
 
@@ -87,3 +93,5 @@ Load these as needed during reviews and implementation:
 - **[Accessibility & Interaction](references/accessibility-and-interaction.md)** -- Focus, ARIA, keyboard, touch targets, cursors, drag UX
 - **[Layout, Typography & Animation](references/layout-typography-animation.md)** -- Performance, responsive, fonts, color, motion, charts
 - **[Forms, Content & Checklist](references/forms-content-checklist.md)** -- Forms, content handling, navigation, dark mode, locale, hydration, pre-delivery checklist
+
+</references>

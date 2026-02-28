@@ -15,6 +15,8 @@ Packages: `drizzle-orm` (runtime), `drizzle-kit` (CLI/migrations).
 - [Common Patterns](#common-patterns)
 - [Reference Files](#reference-files)
 
+<examples>
+
 ## Quick Start
 
 ### Connect
@@ -151,15 +153,6 @@ npx drizzle-kit pull         # introspect DB -> Drizzle schema
 npx drizzle-kit studio       # visual browser UI
 ```
 
-## Import Cheat Sheet
-
-| Import path           | Key exports                                                                                                                                                                                                                                   |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `drizzle-orm/pg-core` | `pgTable`, `pgEnum`, column types (`serial`, `text`, `integer`, `uuid`, `timestamp`, `jsonb`, `varchar`, `boolean`, `numeric`, `bigint`, `geometry`, `vector`, ...), `index`, `uniqueIndex`, `unique`, `check`, `primaryKey`, `foreignKey`    |
-| `drizzle-orm`         | Operators: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `and`, `or`, `not`, `isNull`, `isNotNull`, `inArray`, `between`, `like`, `ilike`, `exists`, `sql`, `asc`, `desc`. Utilities: `getColumns`, `defineRelations`, `cosineDistance`, `l2Distance` |
-| `drizzle-orm` (types) | `InferSelectModel`, `InferInsertModel`                                                                                                                                                                                                        |
-| `drizzle-zod`         | `createInsertSchema`, `createSelectSchema`                                                                                                                                                                                                    |
-
 ## Common Patterns
 
 ### Conditional filters
@@ -190,6 +183,23 @@ type User = typeof users.$inferSelect;
 type NewUser = typeof users.$inferInsert;
 ```
 
+</examples>
+
+<quick_reference>
+
+## Import Cheat Sheet
+
+| Import path           | Key exports                                                                                                                                                                                                                                   |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `drizzle-orm/pg-core` | `pgTable`, `pgEnum`, column types (`serial`, `text`, `integer`, `uuid`, `timestamp`, `jsonb`, `varchar`, `boolean`, `numeric`, `bigint`, `geometry`, `vector`, ...), `index`, `uniqueIndex`, `unique`, `check`, `primaryKey`, `foreignKey`    |
+| `drizzle-orm`         | Operators: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `and`, `or`, `not`, `isNull`, `isNotNull`, `inArray`, `between`, `like`, `ilike`, `exists`, `sql`, `asc`, `desc`. Utilities: `getColumns`, `defineRelations`, `cosineDistance`, `l2Distance` |
+| `drizzle-orm` (types) | `InferSelectModel`, `InferInsertModel`                                                                                                                                                                                                        |
+| `drizzle-zod`         | `createInsertSchema`, `createSelectSchema`                                                                                                                                                                                                    |
+
+</quick_reference>
+
+<references>
+
 ## Reference Files
 
 For detailed API coverage, see:
@@ -200,3 +210,5 @@ For detailed API coverage, see:
 - **sql`` template: raw, empty, join, identifier, placeholders**: [references/sql-operator.md](references/sql-operator.md)
 - **drizzle-kit commands, drizzle.config.ts, migration workflows**: [references/migrations.md](references/migrations.md)
 - **Dynamic queries, transactions, custom types, Zod, utilities**: [references/advanced.md](references/advanced.md)
+
+</references>

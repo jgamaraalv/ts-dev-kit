@@ -13,6 +13,8 @@ description: |
 
 # TanStack Query v5 (React)
 
+<quick_reference>
+
 ## Setup
 
 ```tsx
@@ -51,6 +53,10 @@ function App() {
 | `structuralSharing` | `true` | Preserves referential identity if data is structurally equal |
 
 **Key recommendation:** Set `staleTime` above 0 to control refetch frequency rather than disabling individual refetch triggers.
+
+</quick_reference>
+
+<examples>
 
 ## queryOptions — co-locate key + fn
 
@@ -325,6 +331,10 @@ const { data } = useQuery({
 
 `skipToken` prevents `refetch()` from working — use `enabled: false` if you need manual refetch.
 
+</examples>
+
+<gotchas>
+
 ## setQueryData — immutability
 
 ```tsx
@@ -340,9 +350,15 @@ queryClient.setQueryData(['todo', id], (old) =>
 )
 ```
 
+</gotchas>
+
+<references>
+
 ## Further Reference
 
 - **Full API signatures** (useQuery, useMutation, useInfiniteQuery, QueryClient): See [references/api-reference.md](references/api-reference.md)
 - **SSR & Next.js** (hydration, App Router, streaming): See [references/ssr-nextjs.md](references/ssr-nextjs.md)
 - **Testing** (renderHook, mocking, setup): See [references/testing.md](references/testing.md)
 - **Advanced patterns** (TypeScript, Suspense, waterfalls, network modes): See [references/advanced-patterns.md](references/advanced-patterns.md)
+
+</references>

@@ -8,12 +8,7 @@ description: "Docker containerization reference — multi-stage builds, Compose 
 
 Docker best practices for Node.js monorepos with Yarn 4 Berry.
 
-## When to Load References
-
-| Need                                               | Reference file                                                         |
-| -------------------------------------------------- | ---------------------------------------------------------------------- |
-| Writing or reviewing a Dockerfile for the monorepo | [references/monorepo-dockerfile.md](references/monorepo-dockerfile.md) |
-| Configuring docker-compose for dev or production   | [references/compose-configs.md](references/compose-configs.md)         |
+<rules>
 
 ## Key Principles
 
@@ -41,6 +36,10 @@ Docker best practices for Node.js monorepos with Yarn 4 Berry.
 - Read-only filesystem where possible: `read_only: true`
 - Drop capabilities: `cap_drop: [ALL]`
 
+</rules>
+
+<quick_reference>
+
 ## Useful Commands
 
 ```bash
@@ -53,3 +52,16 @@ docker system df                  # View cache usage
 docker system prune -a            # Prune unused images
 docker stats                      # Resource usage
 ```
+
+</quick_reference>
+
+<references>
+
+## When to Load References
+
+| Need                                               | Reference file                                                         |
+| -------------------------------------------------- | ---------------------------------------------------------------------- |
+| Writing or reviewing a Dockerfile for the monorepo | [references/monorepo-dockerfile.md](references/monorepo-dockerfile.md) |
+| Configuring docker-compose for dev or production   | [references/compose-configs.md](references/compose-configs.md)         |
+
+</references>

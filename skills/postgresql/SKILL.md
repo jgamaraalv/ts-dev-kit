@@ -7,6 +7,8 @@ description: "PostgreSQL 16+ reference for writing queries, designing schemas, m
 
 Version: **16+**. All syntax is standard; most features apply to PostgreSQL 13+.
 
+<quick_reference>
+
 ## Quick patterns
 
 ```sql
@@ -24,6 +26,25 @@ WHERE relkind = 'r' ORDER BY pg_total_relation_size(oid) DESC;
 SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE pid = <pid>;
 ```
 
+</quick_reference>
+
+<rules>
+
+## Key non-obvious facts
+
+- Every statement runs in a transaction. Without `BEGIN`, each statement auto-commits.
+- `jsonb` stores parsed binary (faster queries); `json` stores raw text (exact input preserved). Prefer `jsonb`.
+- `LIKE 'foo%'` can use B-tree; `LIKE '%foo'` cannot — use `pg_trgm` GIN for suffix search.
+- `CREATE INDEX CONCURRENTLY` avoids table lock but cannot run inside a transaction block.
+- `EXPLAIN` without `ANALYZE` shows the planner's _estimate_. Always use `EXPLAIN (ANALYZE, BUFFERS)` for real data.
+- Null values are stored in indexes by B-tree (unlike some other databases). `IS NULL` can use an index.
+- `SERIAL`/`BIGSERIAL` are shorthand for sequence + default; prefer `GENERATED ALWAYS AS IDENTITY` (SQL standard).
+- Default isolation level is **Read Committed**. `SERIALIZABLE` prevents all anomalies but may abort transactions.
+
+</rules>
+
+<references>
+
 ## Reference files
 
 Load the relevant file when working on a specific topic:
@@ -38,13 +59,4 @@ Load the relevant file when working on a specific topic:
 | EXPLAIN output, VACUUM, stats          | [references/performance.md](references/performance.md)   | Query tuning or performance analysis   |
 | psql meta-commands                     | [references/psql-cli.md](references/psql-cli.md)         | Working interactively in psql          |
 
-## Key non-obvious facts
-
-- Every statement runs in a transaction. Without `BEGIN`, each statement auto-commits.
-- `jsonb` stores parsed binary (faster queries); `json` stores raw text (exact input preserved). Prefer `jsonb`.
-- `LIKE 'foo%'` can use B-tree; `LIKE '%foo'` cannot — use `pg_trgm` GIN for suffix search.
-- `CREATE INDEX CONCURRENTLY` avoids table lock but cannot run inside a transaction block.
-- `EXPLAIN` without `ANALYZE` shows the planner's _estimate_. Always use `EXPLAIN (ANALYZE, BUFFERS)` for real data.
-- Null values are stored in indexes by B-tree (unlike some other databases). `IS NULL` can use an index.
-- `SERIAL`/`BIGSERIAL` are shorthand for sequence + default; prefer `GENERATED ALWAYS AS IDENTITY` (SQL standard).
-- Default isolation level is **Read Committed**. `SERIALIZABLE` prevents all anomalies but may abort transactions.
+</references>

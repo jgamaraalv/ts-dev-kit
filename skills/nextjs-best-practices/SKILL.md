@@ -9,27 +9,7 @@ Apply these rules when writing or reviewing Next.js code.
 
 > **Note:** Next.js 16 renamed `middleware.ts` to `proxy.ts`. Verify `proxy.ts` support in your version; `middleware.ts` remains the stable API.
 
-## Table of Contents
-
-- [File Conventions](#file-conventions)
-- [RSC Boundaries](#rsc-boundaries)
-- [Async Patterns](#async-patterns)
-- [Runtime Selection](#runtime-selection)
-- [Directives](#directives)
-- [Functions](#functions)
-- [Error Handling](#error-handling)
-- [Data Patterns](#data-patterns)
-- [Route Handlers](#route-handlers)
-- [Metadata & OG Images](#metadata--og-images)
-- [Image Optimization](#image-optimization)
-- [Font Optimization](#font-optimization)
-- [Bundling](#bundling)
-- [Scripts](#scripts)
-- [Hydration Errors](#hydration-errors)
-- [Suspense Boundaries](#suspense-boundaries)
-- [Parallel & Intercepting Routes](#parallel--intercepting-routes)
-- [Self-Hosting](#self-hosting)
-- [Debug Tricks](#debug-tricks)
+<references>
 
 ## File Conventions
 
@@ -192,3 +172,5 @@ See [debug-tricks.md](references/debug-tricks.md) for:
 
 - MCP endpoint for AI-assisted debugging
 - Rebuild specific routes with `--debug-build-paths`
+
+</references>

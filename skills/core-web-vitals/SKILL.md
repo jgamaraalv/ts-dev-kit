@@ -9,6 +9,8 @@ allowed-tools: Bash(python3 *)
 The three stable Core Web Vitals, each measured at the **75th percentile** of
 real page loads (segmented by mobile and desktop):
 
+<quick_reference>
+
 | Metric | Measures | Good | Needs Improvement | Poor |
 |--------|----------|------|-------------------|------|
 | **LCP** — Largest Contentful Paint | Loading | ≤ 2.5 s | 2.5–4.0 s | > 4.0 s |
@@ -16,6 +18,36 @@ real page loads (segmented by mobile and desktop):
 | **CLS** — Cumulative Layout Shift | Visual stability | ≤ 0.1 | 0.1–0.25 | > 0.25 |
 
 A page **passes** Core Web Vitals only if all three metrics meet "Good" at the 75th percentile.
+
+## Supporting metrics (non-Core but diagnostic)
+
+- **FCP** (First Contentful Paint) — diagnoses render-blocking resources upstream of LCP
+- **TTFB** (Time to First Byte) — server response time; directly affects LCP
+- **TBT** (Total Blocking Time) — lab proxy for INP; identifies long tasks
+
+## Tools matrix
+
+| Tool | Type | LCP | INP | CLS | Notes |
+|------|------|-----|-----|-----|-------|
+| Chrome User Experience Report (CrUX) | Field | ✓ | ✓ | ✓ | 28-day rolling window of real users |
+| PageSpeed Insights | Field + Lab | ✓ | ✓ | ✓ | Field = CrUX data; Lab = Lighthouse |
+| Search Console CWV report | Field | ✓ | ✓ | ✓ | Groups URLs by template |
+| Chrome DevTools Performance panel | Field + Lab | ✓ | ✓ | ✓ | Local profiling, interaction tracing |
+| Lighthouse | Lab | ✓ | TBT* | ✓ | CI integration; INP → use TBT as proxy |
+
+*Lighthouse uses **Total Blocking Time (TBT)** as a lab proxy for INP. TBT
+correlates with INP but does not replace field measurement.
+
+## Metric lifecycle
+
+Metrics progress through: **Experimental → Pending → Stable**.
+All three current Core Web Vitals (LCP, CLS, INP) are **Stable**.
+INP replaced FID (First Input Delay) in March 2024.
+Changes to stable metrics follow an annual cadence with advance notice.
+
+</quick_reference>
+
+<examples>
 
 ## Quick setup: measure all three in the field
 
@@ -43,33 +75,9 @@ Each callback receives `{ name, value, rating, delta, id, navigationType }`.
 > The `web-vitals` library handles bfcache restores, prerendered pages, iframe
 > aggregation, and other edge cases that raw PerformanceObserver does not.
 
-## Tools matrix
+</examples>
 
-| Tool | Type | LCP | INP | CLS | Notes |
-|------|------|-----|-----|-----|-------|
-| Chrome User Experience Report (CrUX) | Field | ✓ | ✓ | ✓ | 28-day rolling window of real users |
-| PageSpeed Insights | Field + Lab | ✓ | ✓ | ✓ | Field = CrUX data; Lab = Lighthouse |
-| Search Console CWV report | Field | ✓ | ✓ | ✓ | Groups URLs by template |
-| Chrome DevTools Performance panel | Field + Lab | ✓ | ✓ | ✓ | Local profiling, interaction tracing |
-| Lighthouse | Lab | ✓ | TBT* | ✓ | CI integration; INP → use TBT as proxy |
-
-*Lighthouse uses **Total Blocking Time (TBT)** as a lab proxy for INP. TBT
-correlates with INP but does not replace field measurement.
-
-## Supporting metrics (non-Core but diagnostic)
-
-- **FCP** (First Contentful Paint) — diagnoses render-blocking resources upstream of LCP
-- **TTFB** (Time to First Byte) — server response time; directly affects LCP
-- **TBT** (Total Blocking Time) — lab proxy for INP; identifies long tasks
-
-## When to read reference files
-
-| Reference | Read when… |
-|-----------|-----------|
-| [references/lcp.md](references/lcp.md) | LCP > 2.5 s, diagnosing slow image/text load, preload/CDN questions |
-| [references/inp.md](references/inp.md) | INP > 200 ms, slow click/key/tap response, long task investigations |
-| [references/cls.md](references/cls.md) | CLS > 0.1, elements jumping on scroll or load, font/image shift |
-| [references/tools.md](references/tools.md) | Setting up monitoring, using DevTools/Lighthouse/PSI, top-9 optimization checklist |
+<visual_report>
 
 ## Generate a visual report
 
@@ -101,9 +109,17 @@ python3 SCRIPT_PATH/visualize.py \
 The script (`scripts/visualize.py`) requires only Python 3 stdlib — no packages to install.
 It outputs a self-contained HTML file with color-coded metric cards, a visual progress bar showing where each value falls on the Good/Needs Improvement/Poor scale, and an overall PASS/FAIL/NEEDS IMPROVEMENT verdict.
 
-## Metric lifecycle
+</visual_report>
 
-Metrics progress through: **Experimental → Pending → Stable**.
-All three current Core Web Vitals (LCP, CLS, INP) are **Stable**.
-INP replaced FID (First Input Delay) in March 2024.
-Changes to stable metrics follow an annual cadence with advance notice.
+<references>
+
+## When to read reference files
+
+| Reference | Read when… |
+|-----------|-----------|
+| [references/lcp.md](references/lcp.md) | LCP > 2.5 s, diagnosing slow image/text load, preload/CDN questions |
+| [references/inp.md](references/inp.md) | INP > 200 ms, slow click/key/tap response, long task investigations |
+| [references/cls.md](references/cls.md) | CLS > 0.1, elements jumping on scroll or load, font/image shift |
+| [references/tools.md](references/tools.md) | Setting up monitoring, using DevTools/Lighthouse/PSI, top-9 optimization checklist |
+
+</references>

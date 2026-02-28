@@ -10,11 +10,9 @@ description: "Fastify 5 best practices, API reference, and patterns for routes, 
 - [Request lifecycle](#request-lifecycle-exact-order)
 - [Top anti-patterns](#top-anti-patterns)
 - [Quick patterns](#quick-patterns)
-  - [Plugin with fastify-plugin (FastifyPluginCallback)](#plugin-with-fastify-plugin-fastifyplugincallback)
-  - [Route with validation](#route-with-validation)
-  - [Hook (application-level)](#hook-application-level)
-  - [Error handler](#error-handler)
 - [Reference files](#reference-files)
+
+<quick_reference>
 
 ## Request lifecycle (exact order)
 
@@ -35,6 +33,10 @@ Incoming Request
 ```
 
 Error at any stage → `onError` hooks → error handler → `onSend` → response → `onResponse`.
+
+</quick_reference>
+
+<anti_patterns>
 
 ## Top anti-patterns
 
@@ -57,6 +59,10 @@ Error at any stage → `onError` hooks → error handler → `onSend` → respon
 9. **String concatenation in SQL from route params** — Always use parameterized queries. Fastify validates input shape, not content safety.
 
 10. **Missing response schema** — Without `response` schema, Fastify serializes with `JSON.stringify()` (slow) and may leak sensitive fields. Use `fast-json-stringify` via response schemas.
+
+</anti_patterns>
+
+<examples>
 
 ## Quick patterns
 
@@ -130,6 +136,10 @@ fastify.setErrorHandler((error, request, reply) => {
 });
 ```
 
+</examples>
+
+<references>
+
 ## Reference files
 
 Load the relevant file when you need detailed API information:
@@ -141,3 +151,5 @@ Load the relevant file when you need detailed API information:
 - **Validation & serialization** — JSON Schema, Ajv, response schemas, custom validators: [references/validation-and-serialization.md](references/validation-and-serialization.md)
 - **Request, Reply & errors** — request/reply API, error handling, FST_ERR codes: [references/request-reply-errors.md](references/request-reply-errors.md)
 - **TypeScript & logging** — route generics, type providers, Pino config, decorators: [references/typescript-and-logging.md](references/typescript-and-logging.md)
+
+</references>

@@ -7,6 +7,8 @@ description: "ioredis v5 reference for Node.js Redis client — connection setup
 
 ioredis v5.x. Requires Node.js >= 12, Redis >= 2.6.12. 100% TypeScript.
 
+<quick_reference>
+
 ## Critical: Import Style
 
 ```ts
@@ -16,15 +18,6 @@ import { Redis } from "ioredis";
 // For Cluster:
 import { Redis, Cluster } from "ioredis";
 ```
-
-## When to Load References
-
-| Need                                                                           | Reference file                                                       |
-| ------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
-| Connection setup, RedisOptions, TLS, retryStrategy, lifecycle                  | [references/connection-options.md](references/connection-options.md) |
-| Core API: pipelines, transactions, Pub/Sub, Lua scripting, scanning, events    | [references/core-api.md](references/core-api.md)                     |
-| Streams, auto-pipelining, transformers, binary data, error handling, debugging | [references/advanced-patterns.md](references/advanced-patterns.md)   |
-| Redis Cluster setup, ClusterOptions, Sentinel config, failover                 | [references/cluster-sentinel.md](references/cluster-sentinel.md)     |
 
 ## Quick Reference
 
@@ -40,6 +33,10 @@ import { Redis, Cluster } from "ioredis";
 | Graceful close | `await redis.quit()`                                                       |
 | Force close    | `redis.disconnect()`                                                       |
 
+</quick_reference>
+
+<gotchas>
+
 ## Common Gotchas
 
 1. **Named import**: Always `import { Redis } from "ioredis"` with NodeNext resolution
@@ -49,3 +46,18 @@ import { Redis, Cluster } from "ioredis";
 5. **`showFriendlyErrorStack`**: Performance cost — never enable in production
 6. **Cluster pipelines**: All keys in a pipeline must hash to slots served by the same node
 7. **`enableAutoPipelining`**: 35-50% throughput improvement, safe to enable globally
+
+</gotchas>
+
+<references>
+
+## When to Load References
+
+| Need                                                                           | Reference file                                                       |
+| ------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| Connection setup, RedisOptions, TLS, retryStrategy, lifecycle                  | [references/connection-options.md](references/connection-options.md) |
+| Core API: pipelines, transactions, Pub/Sub, Lua scripting, scanning, events    | [references/core-api.md](references/core-api.md)                     |
+| Streams, auto-pipelining, transformers, binary data, error handling, debugging | [references/advanced-patterns.md](references/advanced-patterns.md)   |
+| Redis Cluster setup, ClusterOptions, Sentinel config, failover                 | [references/cluster-sentinel.md](references/cluster-sentinel.md)     |
+
+</references>

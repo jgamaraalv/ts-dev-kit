@@ -10,6 +10,8 @@ boolean prop proliferation by using compound components, lifting state, and
 composing internals. These patterns make codebases easier for both humans and AI
 agents to work with as they scale.
 
+<constraints>
+
 ## When NOT to Use
 
 Skip these patterns when: fewer than 3 props, simple variants, or single-use components.
@@ -24,6 +26,10 @@ Reference these guidelines when:
 - Reviewing component architecture
 - Working with compound components or context providers
 
+</constraints>
+
+<rules>
+
 ## Rule Categories by Priority
 
 | Priority | Category                | Impact | Prefix          |
@@ -32,6 +38,10 @@ Reference these guidelines when:
 | 2        | State Management        | MEDIUM | `state-`        |
 | 3        | Implementation Patterns | MEDIUM | `patterns-`     |
 | 4        | React 19 APIs           | MEDIUM | `react19-`      |
+
+</rules>
+
+<references>
 
 ## Quick Reference
 
@@ -56,3 +66,5 @@ Reference these guidelines when:
 > **React 19+ only.** Skip this section if using React 18 or earlier.
 
 - **No forwardRef** — Don't use `forwardRef`; pass `ref` as a regular prop. Use `use()` instead of `useContext()` — see [references/react19-no-forwardref.md](references/react19-no-forwardref.md)
+
+</references>

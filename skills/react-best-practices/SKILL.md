@@ -7,18 +7,7 @@ description: "React and Next.js performance patterns. Use when writing, reviewin
 
 Performance optimization guide for React and Next.js applications, based on Vercel Engineering practices. 8 categories organized by impact.
 
-## Table of Contents
-
-- [When to Apply](#when-to-apply)
-- [Quick Reference](#quick-reference)
-  - [Async Patterns (CRITICAL)](#1-async-patterns-critical)
-  - [Bundle Optimization (CRITICAL)](#2-bundle-optimization-critical)
-  - [Server-Side Performance (HIGH)](#3-server-side-performance-high)
-  - [Client-Side Patterns (MEDIUM-HIGH)](#4-client-side-patterns-medium-high)
-  - [Re-render Optimization (MEDIUM)](#5-re-render-optimization-medium)
-  - [Rendering Performance (MEDIUM)](#6-rendering-performance-medium)
-  - [JavaScript Performance (LOW-MEDIUM)](#7-javascript-performance-low-medium)
-  - [Advanced Patterns (LOW)](#8-advanced-patterns-low)
+<constraints>
 
 ## When to Apply
 
@@ -26,6 +15,10 @@ Performance optimization guide for React and Next.js applications, based on Verc
 - Implementing data fetching (client or server-side)
 - Reviewing code for performance issues
 - Optimizing bundle size or load times
+
+</constraints>
+
+<references>
 
 ## Quick Reference
 
@@ -108,3 +101,5 @@ Performance optimization guide for React and Next.js applications, based on Verc
 
 - Store event handlers in refs -- stable effect subscriptions
 - Initialize app once per load -- module-level guard
+
+</references>

@@ -7,6 +7,8 @@ description: "TypeScript coding conventions for strict, type-safe projects. Use 
 
 Project-wide TypeScript standards that complement agent-specific instructions.
 
+<rules>
+
 ## Type Safety
 
 - **No `any`**: Use `unknown` if the type is truly dynamic, then narrow.
@@ -43,9 +45,15 @@ import { Redis } from "ioredis";
 - **Query** (returns data): `get`, `find`, `list`, `fetch`
 - **Command** (changes state): `create`, `update`, `delete`, `add`, `remove`
 
+</rules>
+
+<anti_patterns>
+
 ## Anti-Patterns
 
 - **Primitive obsession**: Use branded types or Zod enums, not raw strings for IDs and statuses.
 - **Magic numbers/strings**: Use constants from a shared package (e.g., `RATE_LIMITS`, `PAGINATION`, `CACHE`).
 - **Long parameter lists**: Use an options object or a Zod schema.
 - **Premature abstraction**: Three similar lines > one premature helper. Abstract on the third repetition.
+
+</anti_patterns>

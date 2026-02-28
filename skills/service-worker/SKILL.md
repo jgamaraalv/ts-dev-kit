@@ -10,17 +10,12 @@ description: "Service Worker API implementation guide — registration, lifecycl
 - [Constraints](#constraints)
 - [Lifecycle](#lifecycle)
 - [Registration](#registration)
-- [Install Event — Pre-cache Assets](#install-event--pre-cache-assets)
-- [Activate Event — Clean Up Old Caches](#activate-event--clean-up-old-caches)
-- [Fetch Event — Intercept Requests](#fetch-event--intercept-requests)
-- [Navigation Preload](#navigation-preload)
-- [Updating a Service Worker](#updating-a-service-worker)
-- [Communicating with Pages](#communicating-with-pages)
+- [Install / Activate / Fetch Events](#install-event--pre-cache-assets)
 - [Common Pitfalls](#common-pitfalls)
-- [Push Notifications & Background Sync](#push-notifications--background-sync)
-- [API Quick Reference](#api-quick-reference)
 - [Next.js Integration](#nextjs-integration)
-- [DevTools](#devtools)
+- [Reference files](#reference-files)
+
+<constraints>
 
 ## Constraints
 
@@ -30,6 +25,10 @@ description: "Service Worker API implementation guide — registration, lifecycl
 - No dynamic `import()` — only static `import` statements
 - Scope defaults to the directory containing the SW file
 - `self` refers to `ServiceWorkerGlobalScope`
+
+</constraints>
+
+<quick_reference>
 
 ## Lifecycle
 
@@ -44,6 +43,27 @@ register() → Download → Install → [Wait] → Activate → Fetch control
 5. **Fetch** events start flowing — SW controls page network requests
 
 A document must reload to be controlled (or call `clients.claim()` during activate).
+
+## Updating a Service Worker
+
+- Browser byte-compares the SW file on each navigation (or every 24h)
+- New version installs in background while old version still serves
+- Increment the cache name (e.g., `v1` → `v2`) in the new version
+- Delete old caches in the `activate` handler
+- Call `self.skipWaiting()` in `install` to activate immediately
+- Call `self.clients.claim()` in `activate` to take control of open pages
+
+## DevTools
+
+- **Chrome**: `chrome://inspect/#service-workers` or Application > Service Workers
+- **Firefox**: `about:debugging#/runtime/this-firefox` or Application > Service Workers
+- **Edge**: `edge://inspect/#service-workers` or Application > Service Workers
+
+Unregister, update, and inspect caches from the Application panel. Use "Update on reload" checkbox during development.
+
+</quick_reference>
+
+<examples>
 
 ## Registration
 
@@ -125,15 +145,6 @@ self.addEventListener("fetch", (event) => {
 });
 ```
 
-## Updating a Service Worker
-
-- Browser byte-compares the SW file on each navigation (or every 24h)
-- New version installs in background while old version still serves
-- Increment the cache name (e.g., `v1` → `v2`) in the new version
-- Delete old caches in the `activate` handler
-- Call `self.skipWaiting()` in `install` to activate immediately
-- Call `self.clients.claim()` in `activate` to take control of open pages
-
 ## Communicating with Pages
 
 ```js
@@ -149,22 +160,6 @@ self.addEventListener("message", (event) => {
   if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
 });
 ```
-
-## Common Pitfalls
-
-1. **Response cloning** — `response.clone()` before both caching and returning, since body streams can only be read once
-2. **Opaque responses** — cross-origin fetches without CORS return opaque responses (status 0). `cache.add()` will refuse them. Use `cache.put()` but you can't inspect the response
-3. **waitUntil timing** — call `event.waitUntil()` synchronously within the event handler, not inside an async callback
-4. **Scope ceiling** — a SW cannot control URLs above its own directory unless `Service-Worker-Allowed` header is set
-5. **No state persistence** — the SW may terminate at any time when idle. Don't store state in global variables — use Cache API or IndexedDB
-
-## Push Notifications & Background Sync
-
-For push subscription, handling push events, and background sync implementation, see [references/push-and-sync.md](references/push-and-sync.md).
-
-## API Quick Reference
-
-For detailed interfaces (`Cache`, `CacheStorage`, `FetchEvent`, `Clients`, `ServiceWorkerRegistration`, `ServiceWorkerGlobalScope`), see [references/api-reference.md](references/api-reference.md).
 
 ## Next.js Integration
 
@@ -186,10 +181,26 @@ export function ServiceWorkerRegistrar() {
 
 Add to root layout. Next.js serves `public/` files at the root, so `/sw.js` scope covers `/`.
 
-## DevTools
+</examples>
 
-- **Chrome**: `chrome://inspect/#service-workers` or Application > Service Workers
-- **Firefox**: `about:debugging#/runtime/this-firefox` or Application > Service Workers
-- **Edge**: `edge://inspect/#service-workers` or Application > Service Workers
+<gotchas>
 
-Unregister, update, and inspect caches from the Application panel. Use "Update on reload" checkbox during development.
+## Common Pitfalls
+
+1. **Response cloning** — `response.clone()` before both caching and returning, since body streams can only be read once
+2. **Opaque responses** — cross-origin fetches without CORS return opaque responses (status 0). `cache.add()` will refuse them. Use `cache.put()` but you can't inspect the response
+3. **waitUntil timing** — call `event.waitUntil()` synchronously within the event handler, not inside an async callback
+4. **Scope ceiling** — a SW cannot control URLs above its own directory unless `Service-Worker-Allowed` header is set
+5. **No state persistence** — the SW may terminate at any time when idle. Don't store state in global variables — use Cache API or IndexedDB
+
+</gotchas>
+
+<references>
+
+## Reference files
+
+- **Caching strategies** (cache-first, network-first, stale-while-revalidate): [references/caching-strategies.md](references/caching-strategies.md)
+- **Push notifications & background sync** (push subscription, push events, background sync): [references/push-and-sync.md](references/push-and-sync.md)
+- **API quick reference** (`Cache`, `CacheStorage`, `FetchEvent`, `Clients`, `ServiceWorkerRegistration`, `ServiceWorkerGlobalScope`): [references/api-reference.md](references/api-reference.md)
+
+</references>

@@ -4,9 +4,9 @@ description: "Generates a complete, structured, and implementation-ready Product
 argument-hint: "[product-idea | feature-description | business-context | prd-md-file-path]"
 ---
 
-<system>
+<role>
 You are a Senior Product Manager and Product Strategist. Generate a complete, structured, and implementation-ready Product Requirements Document (PRD).
-</system>
+</role>
 
 <spec>
 $ARGUMENTS
