@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.0.0] - 2026-02-28
+
+### Changed
+
+- Expand `/typescript-conventions` skill with 7 new sections: Interface vs Type, Unions and Literal Types, Discriminated Unions, Type Narrowing, Generics, Mapped & Template Literal Types, and Intersection Types — previously covered only strict mode, branded types, imports, error handling, naming, and anti-patterns
+- Expand `/typescript-conventions` anti-patterns from 3 to 10 entries — adds narrowing, broad unions, shallow readonly, enum misuse, unconstrained generics, conflicting intersections, and missing exhaustiveness checks
+- Update `/typescript-conventions` skill description to reflect new coverage areas (type definitions, type narrowing, discriminated unions, generics)
+- Replace ASCII hyphens with em dashes in error handling section for consistency
+
+### Added
+
+- `.firecrawl` to `.gitignore`
+
+### BREAKING CHANGE
+
+- `/typescript-conventions` skill description changed — projects that match skills by description string may need to update their matching logic to account for the expanded trigger list (now includes type definitions, type narrowing, discriminated unions, generics)
+
 ## [5.0.0] - 2026-02-28
 
 ### Changed
